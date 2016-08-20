@@ -5,8 +5,19 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var routes = require('./routes/index');
-var users = require('./routes/users');
+var routes = require('./server/routes/index');
+var users = require('./server/routes/users.js');
+
+// load mongoose package
+var mongoose = require = require('mongoose');
+
+// Use native Node promises
+mongoose.Promise = global.Promise;
+
+// connect to MongoDB
+mongoose.connect('mongodb://localhost/docsys-api')
+  .then(() =>  console.log('connection succesful'))
+  .catch((err) => console.error(err));
 
 var app = express();
 
@@ -18,7 +29,8 @@ app.set('view engine', 'ejs');
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
