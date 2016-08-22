@@ -11,7 +11,7 @@ var users = require('../models/users.js');
 //
 // module.exports = router;
 
-/* GET /todos listing. */
+/* GET /users listing. */
 router.get('/', function(req, res, next) {
   users.find(function (err, users) {
     if (err) return next(err);
@@ -19,7 +19,7 @@ router.get('/', function(req, res, next) {
   });
 });
 
-/* POST /todos */
+/* POST /user */
 router.post('/', function(req, res, next) {
   users.create(req.body, function (err, post) {
     if (err) return next(err);
