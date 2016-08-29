@@ -3,14 +3,17 @@ var router = express.Router();
 
 var controller = require('../../controllers/users');
 
-// POST /user
+// POST /users
 router.post('/users', controller.create);
 
-// GET /user(s)
+// GET /users
 router.get('/users', controller.retrieve);
 
-// GET /user/:user_id
+// GET /users/:user_id
 router.get('/users/:user_id', controller.find_user);
+
+// PUT /users/:user_id
+router.put('/users/:user_id', controller.update_user);
 
 // /* GET users listing. */
 // router.get('/', function(req, res, next) {

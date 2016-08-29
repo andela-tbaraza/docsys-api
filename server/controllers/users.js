@@ -16,10 +16,10 @@ module.exports = {
     // save user created
     user.save(function(error) {
       if(error) {
-        return res.send(error);
+        res.send(error);
       }
       //if no error encountered return created user
-      return res.json({message: 'user created'});
+      res.json({message: 'user created'});
     });
   },
 
@@ -39,6 +39,30 @@ module.exports = {
 
       res.json(user);
     });
-  }
+  },
 
+  update_user: function(req, res){
+    User.findById(req.params.user_id, function(err, user) {
+      if(err) {
+        res.send(err);
+      }
+
+      // update the user info only if it's new
+      if(req.body.first) user.name.first = req.body.first;
+      if(req.body.last) user.name.last = req.body.last;
+      if(req.body.username) user.username = req.body.username;
+      if(req.body.email) user.email = req.body.email;
+      if(req.body.password) user.password = req.body.password;
+
+      //save the user
+      user.save(function(err) {
+        if(err)
+          res.send(err);
+
+        //return message
+        res.json({message: 'user updated'});
+
+      });
+    });
+  }
 };
