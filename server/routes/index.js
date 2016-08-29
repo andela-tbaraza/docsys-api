@@ -1,4 +1,4 @@
-const userRoutes = require('./users');
+const userRoutes = require('./users/userRoutes');
 var express = require('express');
 var router = express.Router();
 

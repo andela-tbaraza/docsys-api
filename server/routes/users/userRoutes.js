@@ -1,13 +1,16 @@
 var express = require('express');
 var router = express.Router();
 
-var controller = require('../controllers/users');
+var controller = require('../../controllers/users');
 
 // POST /user
 router.post('/users', controller.create);
 
 // GET /user(s)
 router.get('/users', controller.retrieve);
+
+// GET /user/:user_id
+router.get('/users/:user_id', controller.find_user);
 
 // /* GET users listing. */
 // router.get('/', function(req, res, next) {

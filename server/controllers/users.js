@@ -30,6 +30,15 @@ module.exports = {
 
       res.json(users);
     });
+  },
+
+  find_user: function(req, res) {
+    User.findById(req.params.user_id, function(err, user) {
+      if(err)
+        res.send(err);
+
+      res.json(user);
+    });
   }
 
 };

@@ -16,7 +16,7 @@ const port = process.env.PORT || 8080;        // set our port
 // ROUTES FOR OUR application
 // const router = express.Router(); // get an instance of the express Router
 
-const router = require('./server/routes/index');
+const router = require('./server/routes');
 
 // middleware to use for all requests
 router.use(function(req, res, next) {
