@@ -7,8 +7,8 @@ module.exports = {
     var user = new Users();
 
     //values to be added to the new Users instance
-    user.name.first = req.body.firstName;
-    user.name.last = req.body.lastname;
+    user.name.first = req.body.first;
+    user.name.last = req.body.last;
     user.username = req.body.username;
     user.email = req.body.email;
     user.password = req.body.password;
@@ -16,10 +16,11 @@ module.exports = {
     // save user created
     user.save(function(error) {
       if(error) {
-        return parseError(res, error);
+        return res.send(error);
       }
       //if no error encountered return created user
-      return res.json(user);
+      return res.json({message: 'user created'});
     });
   }
+
 };
