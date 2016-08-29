@@ -1,10 +1,10 @@
-const Users = require('../models/users');
+const User = require('../models/users');
 
 module.exports = {
   // Adding a new user
   create: function(req, res) {
     // create an instance of Users models
-    var user = new Users();
+    const user = new User();
 
     //values to be added to the new Users instance
     user.name.first = req.body.first;
@@ -20,6 +20,15 @@ module.exports = {
       }
       //if no error encountered return created user
       return res.json({message: 'user created'});
+    });
+  },
+
+  retrieve: function(req, res) {
+    User.find(function(err, users) {
+      if(err)
+        res.send(err);
+
+      res.json(users);
     });
   }
 

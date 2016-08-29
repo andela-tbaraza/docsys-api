@@ -6,6 +6,9 @@ var controller = require('../controllers/users');
 // POST /user
 router.post('/users', controller.create);
 
+// GET /user(s)
+router.get('/users', controller.retrieve);
+
 // /* GET users listing. */
 // router.get('/', function(req, res, next) {
 //   res.send('respond with a resource');
