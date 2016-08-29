@@ -32,7 +32,7 @@ module.exports = {
     });
   },
 
-  find_user: function(req, res) {
+  findUser: function(req, res) {
     User.findById(req.params.user_id, function(err, user) {
       if(err)
         res.send(err);
@@ -41,7 +41,7 @@ module.exports = {
     });
   },
 
-  update_user: function(req, res){
+  updateUser: function(req, res){
     User.findById(req.params.user_id, function(err, user) {
       if(err) {
         res.send(err);
@@ -63,6 +63,18 @@ module.exports = {
         res.json({message: 'user updated'});
 
       });
+    });
+  },
+
+  deleteUser: function(req, res) {
+    User.remove({
+      _id: req.params.user_id
+    }, function(err) {
+      if(err) {
+        res.send(err);
+      }
+      // else return a message
+      res.json({message: 'successfully deleted the user'});
     });
   }
 };

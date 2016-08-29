@@ -10,10 +10,13 @@ router.post('/users', controller.create);
 router.get('/users', controller.retrieve);
 
 // GET /users/:user_id
-router.get('/users/:user_id', controller.find_user);
+router.get('/users/:user_id', controller.findUser);
 
 // PUT /users/:user_id
-router.put('/users/:user_id', controller.update_user);
+router.put('/users/:user_id', controller.updateUser);
+
+// DELETE /users/:user_id
+router.delete('/users/:user_id', controller.deleteUser);
 
 // /* GET users listing. */
 // router.get('/', function(req, res, next) {
