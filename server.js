@@ -4,6 +4,7 @@ const express = require('express');
 const app = express(); // define our app using express
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const config = require('./config.js');
 
 // configure app to use bodyParser()
 // this will let us get the data from a POST
@@ -32,7 +33,7 @@ const router = require('./server/routes');
 // more routes later
 
 // connect to MongoDB
-mongoose.connect('mongodb://localhost/docsys-api')
+mongoose.connect(config.database)
   .then(() =>  console.log('connection succesful'))
   .catch((err) => console.error(err));
 

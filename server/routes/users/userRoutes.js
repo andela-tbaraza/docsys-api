@@ -4,8 +4,6 @@ var router = express.Router();
 var controller = require('../../controllers/users');
 
 
-// authenticate user
-router.post('/login', controller.authenticateUser);
 
 // POST /users
 router.post('/users', controller.create);
