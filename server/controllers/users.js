@@ -1,4 +1,6 @@
 const User = require('../models/users');
+const jwt = require('jsonwebtoken');
+const secret = 'IdontKnOw';
 
 module.exports = {
   // Adding a new user
@@ -13,10 +15,14 @@ module.exports = {
     user.email = req.body.email;
     user.password = req.body.password;
 
-    // save user created
-    user.save(function(error) {
-      if(error) {
-        res.send(error);
+    // save user created and check for errors
+    user.save(function(err) {
+      if(err) {
+        // duplicate entry
+        if(err.code == 11000) {
+          return res.json({ success: false, message: 'That username already exists' });
+        }
+        res.send(err);
       }
       //if no error encountered return created user
       res.json({message: 'user created'});

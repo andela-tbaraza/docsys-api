@@ -18,6 +18,7 @@ router.put('/users/:user_id', controller.updateUser);
 // DELETE /users/:user_id
 router.delete('/users/:user_id', controller.deleteUser);
 
+
 // /* GET users listing. */
 // router.get('/', function(req, res, next) {
 //   res.send('respond with a resource');
