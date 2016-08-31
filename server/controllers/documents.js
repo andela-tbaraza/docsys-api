@@ -70,6 +70,19 @@ module.exports = {
       // });
     });
 
+  },
+
+  deleteDocument: function(req, res) {
+    Document.remove({
+      _id: req.params.document_id
+    }, function(err) {
+      if(err) {
+        res.send(err);
+      }
+
+      // else return a message
+      res.json({message: 'successfully deleted the document'});
+    });
   }
 
 
