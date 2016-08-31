@@ -36,7 +36,7 @@ UserSchema.pre('save', function(next) {
   let user = this;
 
   // hash the password only if it's new or modified
-  if(!user.isModified('password')) {
+  if(!user.isModified('password')  || !user.isNew) {
     return next();
   }
 

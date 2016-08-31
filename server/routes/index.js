@@ -4,6 +4,7 @@ const userRoutes = require('./users/userRoutes');
 const authRoute = require('./users/authRoute');
 const jwt = require('jsonwebtoken');
 const config = require('../../config.js');
+const documentRoutes = require('./documents/documentRoutes');
 
 router.use(authRoute);
 // console.log(router)
@@ -13,7 +14,7 @@ router.use(function(req, res, next) {
 
   // check for the token in the header, post parameters or url parameters
 
-  let token = req.headers['x-access-token'] || req.body.token || req.param('token');
+  let token = req.headers['x-access-token'] || req.body.token || req.param.token;
   // when token is found
   if(token) {
     // check expiration and verify the secret
@@ -43,5 +44,6 @@ router.use(function(req, res, next) {
 });
 
 router.use(userRoutes);
+router.use(documentRoutes);
 
 module.exports = router;

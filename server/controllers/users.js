@@ -3,7 +3,7 @@ const User = require('../models/users');
 module.exports = {
   // Adding a new user
   create: function(req, res) {
-    // create an instance of Users models
+    // create an instance of User model
     const user = new User();
 
     //values to be added to the new Users instance

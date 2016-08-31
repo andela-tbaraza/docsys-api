@@ -5,9 +5,6 @@ var controller = require('../../controllers/users');
 
 
 
-// POST /users
-router.post('/users', controller.create);
-
 // GET /users
 router.get('/users', controller.retrieve);
 
