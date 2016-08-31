@@ -11,16 +11,18 @@ module.exports = {
 
     // save the document and check for errors
     document.save(function(err) {
-      if(err) {
+      if (err) {
         res.send(err);
       }
-      res.json({message: 'document created'});
+      res.json({
+        message: 'document created'
+      });
     });
   },
 
   find: function(req, res) {
     Document.find(function(err, documents) {
-      if(err) {
+      if (err) {
         res.send(err);
       }
       res.json(documents);
@@ -30,44 +32,45 @@ module.exports = {
 
   findDocument: function(req, res) {
     Document.findById(req.params.document_id, function(err, document) {
-      if(err) {
+      if (err) {
         res.send(err);
       }
       res.json(document);
     });
   },
-  //
-  // updateDocument: function(req, res) {
-  //   Document.findById(req.params.document_id, function(err, document) {
-  //     if(err) {
-  //       req.send(err);
-  //     }
-  //
-  //     // update the document only if it's new
-  //     // !user.isModified('password')  || !user.isNew) {
-  //     if(document.isModified(document.title) || document.isModified(document.content)) {
-  //       document.title = req.body.title;
-  //       document.content = req.body.content;
-  //
-  //       // save the document
-  //       document.save(function(err) {
-  //         if(err) {
-  //           res.send(err);
-  //         }
-  //
-  //         res.json({
-  //           message: 'document updated'
-  //         });
-  //       });
-  //     }
-  //
-  //     res.json({
-  //       message: 'no change has been made to the document'
-  //     });
-  //
-  //   });
-  //
-  // }
+
+  updateDocument: function(req, res) {
+    Document.findById(req.params.document_id, function(err, document) {
+      if (err) {
+        req.send(err);
+      }
+
+      // update the document only if it's new
+      // document.title = req.body.title;
+      // document.content = req.body.content;
+
+      // if(document.isModified('title') || document.isModified('content')) {
+      //   document.title = req.body.title;
+      //   document.content = req.body.content;
+      if (req.body.title) document.title = req.body.title;
+      if (req.body.content) document.content = req.body.content;
+
+      // save the document
+      document.save(function(err) {
+        if (err) {
+          res.send(err);
+        }
+
+        res.json({
+          message: 'document updated'
+        });
+      });
+      // res.json({
+      //   message: 'no change has been made to the document'
+      // });
+    });
+
+  }
 
 
 };
