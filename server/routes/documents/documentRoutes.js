@@ -14,4 +14,7 @@ router.get('/documents/:document_id', controller.findDocument);
 // PUT  /documents/:document_id
 router.put('/documents/:document_id', controller.updateDocument);
 
+// DELETE /documents/:document_id
+router.delete('/documents/:document_id', controller.deleteDocument);
+
 module.exports = router;
