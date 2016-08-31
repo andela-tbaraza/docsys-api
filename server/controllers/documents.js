@@ -18,15 +18,15 @@ module.exports = {
     });
   },
 
-  // find: function(req, res) {
-  //   Document.find(function(err, documents) {
-  //     if(err) {
-  //       res.send(err);
-  //     }
-  //     res.json(documents);
-  //   });
-  //
-  // },
+  find: function(req, res) {
+    Document.find(function(err, documents) {
+      if(err) {
+        res.send(err);
+      }
+      res.json(documents);
+    });
+
+  },
   //
   // findDocument: function(req, res) {
   //   Document.findById(req.params.document_id, function(err, document) {
