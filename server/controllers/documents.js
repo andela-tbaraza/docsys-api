@@ -27,15 +27,15 @@ module.exports = {
     });
 
   },
-  //
-  // findDocument: function(req, res) {
-  //   Document.findById(req.params.document_id, function(err, document) {
-  //     if(err) {
-  //       res.send(err);
-  //     }
-  //     res.json(document);
-  //   });
-  // },
+
+  findDocument: function(req, res) {
+    Document.findById(req.params.document_id, function(err, document) {
+      if(err) {
+        res.send(err);
+      }
+      res.json(document);
+    });
+  },
   //
   // updateDocument: function(req, res) {
   //   Document.findById(req.params.document_id, function(err, document) {
