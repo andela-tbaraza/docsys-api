@@ -1,4 +1,7 @@
 const User = require('../models/users');
+const Role = require('../models/roles');
+
+
 
 module.exports = {
   // Adding a new user
@@ -12,6 +15,20 @@ module.exports = {
     user.username = req.body.username;
     user.email = req.body.email;
     user.password = req.body.password;
+    user.title =  req.body.title;
+
+    // Role.findOne({title: });
+    // user.role = 'user';
+    // user.addRole('admin', function (err) {});
+    // Role.findOne({ title: req.body.title}, (error, roles) => {
+    //   if (error) {
+    //     console.log('Pole hauwezi saidika');
+    //   } else {
+    //     if (roles[0]) {
+    //       user.title = [roles[0]];
+    //     }
+    //   }
+    // });
 
     // save user created and check for errors
     user.save(function(err) {
@@ -23,16 +40,22 @@ module.exports = {
         res.send(err);
       }
       //if no error encountered return created user
-      res.json({message: 'user created'});
+      res.json({message: 'user created', user: user});
     });
   },
 
   retrieve: function(req, res) {
+    console.log(req.decoded)
+    console.log(Role)
     User.find(function(err, users) {
-      if(err)
+      // console.log(User.roles)
+      if(err) {
         res.send(err);
-
+      }
       res.json(users);
+      // res.json({
+      //   message: 'not authorised'
+      // });
     });
   },
 

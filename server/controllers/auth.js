@@ -8,7 +8,7 @@ module.exports = {
     // find the user by name, username and password
     User.findOne({
       username: req.body.username
-    }).select('email username password').exec(function(err, user) {
+    }).select('email username password title').exec(function(err, user) {
       if (err) {
         throw err;
       }
@@ -34,7 +34,9 @@ module.exports = {
           // create a token
           let token = jwt.sign({
             username: user.username,
-            email: user.email
+            email: user.email,
+            _id: user._id,
+            title: user.title
           }, config.secret, {
             expiresIn: '24h' // token expires in 24 hrs
           });

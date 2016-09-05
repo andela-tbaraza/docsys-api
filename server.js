@@ -16,20 +16,14 @@ const port = process.env.PORT || 8080;        // set our port
 
 // ROUTES FOR OUR application
 // const router = express.Router(); // get an instance of the express Router
+const routes = require('./server/routes');
 
-const router = require('./server/routes');
+// all our routes will be prefixed with api
+app.use('/api', routes(express.Router()));
 
-
-
-// test route to make sure everything is working
-// router.get('/', function(req, res) {
-//   res.json({message: 'yaaay! you will like it here'});
-// });
 // Handle all routes
 // router(app);
 // app.use('/', router);
-
-
 // more routes later
 
 // connect to MongoDB
@@ -37,10 +31,6 @@ mongoose.connect(config.database)
   .then(() =>  console.log('connection succesful'))
   .catch((err) => console.error(err));
 
-// all our routes will be prefixed with api
-app.use('/api', router);
-
-
-//Starting the server
+// Starting the server
 app.listen(port);
 console.log('We are on port ' + port);

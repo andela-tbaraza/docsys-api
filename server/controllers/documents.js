@@ -1,23 +1,40 @@
 const Document = require('../models/documents');
+const User = require('../models/users');
+const Role = require('../models/roles');
+
+
 
 module.exports = {
   // adding a new document
   create: function(req, res) {
-    const document = new Document(); // creating an instance of Document model
 
-    // values to be added to new instance
-    document.title = req.body.title;
-    document.content = req.body.content;
+    Role.findOne({
+      title: req.decoded.title
+    }).select('_id').exec(function(err, id) {
+      if(err) {
+        throw err;
+      } else {
+        const document = new Document(); // creating an instance of Document model
+        // values to be added to new instance
+        document.title = req.body.title;
+        document.content = req.body.content;
+        document.ownerId = req.decoded._id; //     console.log(req.decoded);
+        document.roleId = id;
 
-    // save the document and check for errors
-    document.save(function(err) {
-      if (err) {
-        res.send(err);
+        // save the document and check for errors
+        document.save(function(err) {
+          if (err) {
+            res.send(err);
+          }
+          res.json({
+            message: 'document created'
+          });
+        });
       }
-      res.json({
-        message: 'document created'
-      });
     });
+
+
+
   },
 
   find: function(req, res) {
@@ -32,6 +49,8 @@ module.exports = {
 
   findDocument: function(req, res) {
     Document.findById(req.params.document_id, function(err, document) {
+      // console.log(Role)
+      // console.log(Document)
       if (err) {
         res.send(err);
       }
@@ -76,12 +95,14 @@ module.exports = {
     Document.remove({
       _id: req.params.document_id
     }, function(err) {
-      if(err) {
+      if (err) {
         res.send(err);
       }
 
       // else return a message
-      res.json({message: 'successfully deleted the document'});
+      res.json({
+        message: 'successfully deleted the document'
+      });
     });
   }
 
