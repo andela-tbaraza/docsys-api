@@ -1,20 +1,31 @@
-const express = require('express');
-const router = express.Router();
+
 const controller = require('../../controllers/documents');
 
-// POST /documents
-router.post('/documents', controller.create);
+function hasAccess(accessLevel) {
+  return function (req, res, next) {
+    if (accessLevel.indexOf(req.decoded.title) > -1) {
+      return next();
+    }
+    return res.json({
+      success: false,
+      error: 'Unauthorized'
+    });
+  };
+}
 
-// GET /documents
-router.get('/documents', controller.find);
+module.exports = (router) => {
+  // POST /documents
+  router.post('/documents', hasAccess(['user', 'admin']), controller.create);
 
-// GET /documents/:document_id
-router.get('/documents/:document_id', controller.findDocument);
+  // GET /documents
+  router.get('/documents', hasAccess('admin'), controller.find);
 
-// PUT  /documents/:document_id
-router.put('/documents/:document_id', controller.updateDocument);
+  // GET /documents/:document_id
+  router.get('/documents/:document_id', hasAccess(['admin', 'user']), controller.findDocument);
 
-// DELETE /documents/:document_id
-router.delete('/documents/:document_id', controller.deleteDocument);
+  // PUT  /documents/:document_id
+  router.put('/documents/:document_id', hasAccess(['admin', 'user']), controller.updateDocument);
 
-module.exports = router;
+  // DELETE /documents/:document_id
+  router.delete('/documents/:document_id', hasAccess(['admin', 'user']), controller.deleteDocument);
+};
