@@ -8,8 +8,8 @@ const DocumentSchema = new Schema({
     ref: 'User'
   },
   title: {
-    type: String
-    // unique: true
+    type: String,
+    unique: true
   },
   content: {
     type: String
@@ -21,6 +21,10 @@ const DocumentSchema = new Schema({
   modifiedAt: {
     type: Date,
     default: Date.now()
+  },
+  roleId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Role'
   }
 });
 
