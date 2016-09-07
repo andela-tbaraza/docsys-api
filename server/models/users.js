@@ -32,8 +32,12 @@ const UserSchema = new mongoose.Schema({
   },
   title: {
     type: String,
-    required: true,
+    default: 'user',
     ref: 'Role'
+  },
+  viewId: {
+    type: Schema.Types.ObjectId,
+    ref: 'View'
   }
 });
 

@@ -6,7 +6,7 @@ module.exports = (router) => {
   router.post('/documents', hasAccess(['user', 'admin']), controller.create);
 
   // GET /documents
-  router.get('/documents', hasAccess('admin'), controller.find);
+  router.get('/documents', hasAccess(['user', 'admin']), controller.find);
 
   // GET /documents/:document_id
   router.get('/documents/:document_id', hasAccess(['admin', 'user']), controller.findDocument);

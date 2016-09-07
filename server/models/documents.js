@@ -25,6 +25,10 @@ const DocumentSchema = new Schema({
   roleId: {
     type: Schema.Types.ObjectId,
     ref: 'Role'
+  },
+  view: {
+    type: String,
+    ref: 'View'
   }
 });
 

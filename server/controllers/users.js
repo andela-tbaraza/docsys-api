@@ -1,3 +1,4 @@
+const mongooseRole = require('mongoose-role');
 const User = require('../models/users');
 const Role = require('../models/roles');
 
@@ -15,20 +16,7 @@ module.exports = {
     user.username = req.body.username;
     user.email = req.body.email;
     user.password = req.body.password;
-    user.title =  req.body.title;
-
-    // Role.findOne({title: });
-    // user.role = 'user';
-    // user.addRole('admin', function (err) {});
-    // Role.findOne({ title: req.body.title}, (error, roles) => {
-    //   if (error) {
-    //     console.log('Pole hauwezi saidika');
-    //   } else {
-    //     if (roles[0]) {
-    //       user.title = [roles[0]];
-    //     }
-    //   }
-    // });
+    user.title =  req.body.role;
 
     // save user created and check for errors
     user.save(function(err) {

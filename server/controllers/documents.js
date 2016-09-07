@@ -1,5 +1,4 @@
 const Document = require('../models/documents');
-const User = require('../models/users');
 const Role = require('../models/roles');
 
 
@@ -11,7 +10,7 @@ module.exports = {
     Role.findOne({
       title: req.decoded.title
     }).select('_id').exec(function(err, id) {
-      if(err) {
+      if (err) {
         throw err;
       } else {
         const document = new Document(); // creating an instance of Document model
@@ -20,6 +19,7 @@ module.exports = {
         document.content = req.body.content;
         document.ownerId = req.decoded._id; //     console.log(req.decoded);
         document.roleId = id;
+        document.view = req.body.view;
 
         // save the document and check for errors
         document.save(function(err) {
@@ -27,7 +27,8 @@ module.exports = {
             res.send(err);
           }
           res.json({
-            message: 'document created'
+            message: 'document created',
+            document: document
           });
         });
       }
@@ -38,14 +39,30 @@ module.exports = {
   },
 
   find: function(req, res) {
-    Document.find(function(err, documents) {
-      if (err) {
-        res.send(err);
-      }
-      res.json(documents);
-    });
+    console.log(req.decoded.title)
+    if (req.decoded.title == 'user') {
+      Document.find({
+        $or: [ { ownerId: req.decoded._id}, { view: 'public'} ]
+      }, function(err, documents) {
+        if (err) {
+          res.send(err);
+        }
+        res.json(documents);
+        console.log(req.decoded);
+      });
+    } else {
+      Document.find(function(err, documents) {
+        if (err) {
+          res.send(err);
+        }
+        res.json(documents);
+      });
+    }
+
+// $or: [ { status: "A" }, { age: { $lt: 30 } } ]
 
   },
+
 
   findDocument: function(req, res) {
     Document.findById(req.params.document_id, function(err, document) {

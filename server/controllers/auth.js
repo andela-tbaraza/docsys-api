@@ -37,6 +37,7 @@ module.exports = {
             email: user.email,
             _id: user._id,
             title: user.title
+            // viewId: user.viewId
           }, config.secret, {
             expiresIn: '24h' // token expires in 24 hrs
           });
