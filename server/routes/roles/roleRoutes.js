@@ -1,19 +1,5 @@
 const controller = require('../../controllers/roles');
-
-function hasAccess(accessLevel) {
-  return function (req, res, next) {
-    if (accessLevel.indexOf(req.decoded.title) > -1) {
-      return next();
-    } else {
-      return res.json({
-        success: false,
-        error: 'Unauthorized'
-      });
-    }
-
-  };
-}
-
+const hasAccess = require('../../middlewares/access');
 
 module.exports = (router) => {
   router.post('/roles', hasAccess(['admin']),controller.create);
