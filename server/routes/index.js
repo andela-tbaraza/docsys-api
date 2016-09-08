@@ -33,6 +33,7 @@ module.exports = (router) => {
 
           // save the token for use with the other requests
           req.decoded = decoded;
+          console.log(decoded);
 
           // make sure we go to the next routes and don't stop here
           next();

@@ -32,6 +32,7 @@ const UserSchema = new mongoose.Schema({
   },
   title: {
     type: String,
+    default: 'user',
     ref: 'Role'
   },
   viewId: {

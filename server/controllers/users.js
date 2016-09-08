@@ -16,7 +16,7 @@ module.exports = {
     user.username = req.body.username;
     user.email = req.body.email;
     user.password = req.body.password;
-    user.title =  req.body.role;
+    user.role =  req.body.role || undefined;
 
     // save user created and check for errors
     user.save(function(err) {
