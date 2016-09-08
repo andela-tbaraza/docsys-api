@@ -1,6 +1,4 @@
-const mongooseRole = require('mongoose-role');
 const User = require('../models/users');
-const Role = require('../models/roles');
 
 
 
@@ -33,8 +31,6 @@ module.exports = {
   },
 
   retrieve: function(req, res) {
-    console.log(req.decoded)
-    console.log(Role)
     User.find(function(err, users) {
       // console.log(User.roles)
       if(err) {
