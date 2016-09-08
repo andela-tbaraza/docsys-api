@@ -175,6 +175,20 @@ module.exports = {
 
     }
 
+  },
+
+  findByDate: function(req, res) {
+    let limit = req.headers['limit'];
+    limit = parseInt(limit);
+
+    Document.find({
+      createdAt: req.params.date
+    }).limit(limit).exec(function(err, documents) {
+      if (err) {
+        res.send(err);
+      }
+      res.json(documents);
+    });
   }
 
 
