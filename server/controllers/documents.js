@@ -142,6 +142,39 @@ module.exports = {
       });
     }
 
+  },
+
+  findByRole: function(req, res) {
+    let limit = req.headers['limit'];
+    limit = parseInt(limit);
+
+    if (limit) {
+      // console.log(limit)
+      Role.findOne({
+        title: req.params.role
+      }).select('_id').exec(function(err, id) {
+        if (err) {
+          // console.log(req.params.role)
+          throw(err);
+        } else {
+          Document.find(
+            { roleId : id })
+            .limit(limit).exec(function(err, documents) {
+              if (err) {
+                res.send(err);
+              }
+              res.json(documents);
+            });
+        }
+      });
+    } else {
+      res.json({
+        success: false,
+        message: 'no document found'
+      });
+
+    }
+
   }
 
 
