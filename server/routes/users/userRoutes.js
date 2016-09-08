@@ -13,4 +13,8 @@ module.exports = (router) => {
 
   // DELETE /users/:user_id
   router.delete('/users/:user_id', hasAccess(['user', 'admin']), controller.deleteUser);
+
+  // GET /users/:id/documents
+  router.get('/users/:id/documents', hasAccess(['admin', 'user']), controller.findDocuments);
+
 };
