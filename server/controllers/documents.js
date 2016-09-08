@@ -39,7 +39,6 @@ module.exports = {
   },
 
   find: function(req, res) {
-    console.log(req.decoded.title)
     if (req.decoded.title == 'user') {
       Document.find({
         $or: [ { ownerId: req.decoded._id}, { view: 'public'} ]
@@ -48,7 +47,6 @@ module.exports = {
           res.send(err);
         }
         res.json(documents);
-        console.log(req.decoded);
       });
     } else {
       Document.find(function(err, documents) {
@@ -121,6 +119,29 @@ module.exports = {
         message: 'successfully deleted the document'
       });
     });
+  },
+
+  findByLimit: function(req, res) {
+    let limit = req.headers['limit'] || req.query.limit || req.params.limit;
+    if (limit) {
+      limit = parseInt(limit);
+      Document.aggregate(
+          { $sort: { createdAt: -1 } }, { $limit: limit},
+        function(err, documents) {
+          if (err) {
+
+            res.send(err);
+          }
+          res.json(documents);
+          // console.log(documents)
+        });
+    } else {
+      res.json({
+        success: false,
+        message: 'no limit specified'
+      });
+    }
+
   }
 
 
