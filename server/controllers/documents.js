@@ -178,12 +178,14 @@ module.exports = {
   },
 
   findByDate: function(req, res) {
-    let limit = req.headers['limit'];
-    limit = parseInt(limit);
+    // let limit = req.headers['limit'];
+    // const limit = parseInt(limit);
 
     Document.find({
       createdAt: req.params.date
-    }).limit(limit).exec(function(err, documents) {
+    })
+    .limit(parseInt(req.params.limit))
+    .exec(function(err, documents) {
       if (err) {
         res.send(err);
       }
