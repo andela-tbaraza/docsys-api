@@ -16,4 +16,16 @@ module.exports = (router) => {
 
   // DELETE /documents/:document_id
   router.delete('/documents/:document_id', hasAccess(['admin', 'user']), controller.deleteDocument);
+
+  // GET /documents/:limit
+  router.get('/documents/:limit', hasAccess(['admin', 'user']), controller.findByLimit);
+
+  // GET /documents/:role
+  router.get('/documents/:role', hasAccess(['admin', 'user']), controller.findByRole);
+
+  // GET /document/:date
+  router.get('/documents/:date/:limit', hasAccess(['admin', 'user']), controller.findByDate);
+
+
+
 };
