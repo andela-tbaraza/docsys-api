@@ -107,6 +107,7 @@ module.exports = {
   },
 
   deleteDocument: function(req, res) {
+    
     Document.remove({
       _id: req.params.document_id
     }, function(err) {

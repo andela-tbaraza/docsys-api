@@ -1,5 +1,5 @@
 module.exports ={
-  hasAccess: function roleAccess(accessLevel, userId, params) {
+  hasAccess: function hasAccess(accessLevel, userId, params) {
     return function(req, res, next) {
       for (let level of accessLevel) {
         if ( level === 'user') {

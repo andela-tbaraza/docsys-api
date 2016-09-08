@@ -1,31 +1,29 @@
 const controller = require('../../controllers/documents');
-const hasAccess = require('../../middlewares/access');
+const daemon = require('../../middlewares');
 
 module.exports = (router) => {
   // POST /documents
-  router.post('/documents', hasAccess(['user', 'admin']), controller.create);
+  router.post('/documents', daemon.hasAccess(['user', 'admin'], 'userId', 'params'), controller.create);
 
   // GET /documents
-  router.get('/documents', hasAccess(['user', 'admin']), controller.find);
+  router.get('/documents', daemon.hasAccess(['user', 'admin'], 'userId', 'params'), controller.find);
 
   // GET /documents/:document_id
-  router.get('/documents/:document_id', hasAccess(['admin', 'user']), controller.findDocument);
+  router.get('/documents/:document_id', daemon.hasAccess(['admin', 'user'], 'userId', 'params'), controller.findDocument);
 
   // PUT  /documents/:document_id
-  router.put('/documents/:document_id', hasAccess(['admin', 'user']), controller.updateDocument);
+  router.put('/documents/:document_id', daemon.hasAccess(['admin', 'user'], 'userId', 'params'), controller.updateDocument);
 
   // DELETE /documents/:document_id
-  router.delete('/documents/:document_id', hasAccess(['admin', 'user']), controller.deleteDocument);
+  router.delete('/documents/:document_id', daemon.hasAccess(['admin', 'user'], 'userId', 'params'), controller.deleteDocument);
 
   // GET /documents/:limit
-  router.get('/documents/:limit', hasAccess(['admin', 'user']), controller.findByLimit);
+  router.get('/documents/:limit', daemon.hasAccess(['admin', 'user'], 'userId', 'params'), controller.findByLimit);
 
   // GET /documents/:role
-  router.get('/documents/:role', hasAccess(['admin', 'user']), controller.findByRole);
+  router.get('/documents/:role', daemon.hasAccess(['admin', 'user'], 'userId', 'params'), controller.findByRole);
 
   // GET /document/:date
-  router.get('/documents/:date/:limit', hasAccess(['admin', 'user']), controller.findByDate);
-
-
+  router.get('/documents/:date/:limit', daemon.hasAccess(['admin', 'user'], 'userId', 'params'), controller.findByDate);
 
 };

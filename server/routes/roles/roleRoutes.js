@@ -1,7 +1,7 @@
 const controller = require('../../controllers/roles');
-const hasAccess = require('../../middlewares/access');
+const daemon = require('../../middlewares');
 
 module.exports = (router) => {
-  router.post('/roles', hasAccess(['admin']),controller.create);
-  router.get('/roles', hasAccess(['admin']), controller.find);
+  router.post('/roles', daemon.hasAccess(['admin']),controller.create);
+  router.get('/roles', daemon.hasAccess(['admin']), controller.find);
 };
