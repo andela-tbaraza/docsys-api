@@ -4,7 +4,7 @@
   "private": true,
   "main": "server.js",
   "scripts": {
-    "test": "./node_modules/mocha/bin/_mocha test/server/*.test.js"
+    "test": "./node_modules/mocha/bin/_mocha test/server/*.spec.js"
   },
   "dependencies": {
     "async": "^2.0.1",
