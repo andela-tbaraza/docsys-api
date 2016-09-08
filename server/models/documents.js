@@ -14,14 +14,6 @@ const DocumentSchema = new Schema({
   content: {
     type: String
   },
-  createdAt: {
-    type: Date,
-    default: Date.now()
-  },
-  modifiedAt: {
-    type: Date,
-    default: Date.now()
-  },
   roleId: {
     type: Schema.Types.ObjectId,
     ref: 'Role'
@@ -30,6 +22,10 @@ const DocumentSchema = new Schema({
     type: String,
     ref: 'View'
   }
-});
+},
+  {
+    timestamps: true
+  }
+);
 
 module.exports = mongoose.model('Document', DocumentSchema);
