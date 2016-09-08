@@ -1,4 +1,6 @@
 const User = require('../models/users');
+const Document = require('../models/documents');
+
 
 
 
@@ -87,6 +89,18 @@ module.exports = {
       // else return a message
       res.json({message: 'successfully deleted the user'});
     });
+  },
+
+  findDocuments: function(req, res) {
+    Document.find({
+      ownerId: req.params.id
+    }, function(err, documents) {
+      if(err) {
+        res.send(err);
+      }
+      res.json(documents);
+    });
+
   }
 
 };
