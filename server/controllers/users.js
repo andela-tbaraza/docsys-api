@@ -1,5 +1,6 @@
 const User = require('../models/users');
 const Document = require('../models/documents');
+const helpers = require('../middlewares');
 
 
 
@@ -16,7 +17,10 @@ module.exports = {
     user.username = req.body.username;
     user.email = req.body.email;
     user.password = req.body.password;
-    user.role =  req.body.role || undefined;
+
+    if (req.body.title) {
+      user.title =  req.body.title;
+    }
 
     // save user created and check for errors
     user.save(function(err) {
@@ -46,6 +50,7 @@ module.exports = {
   },
 
   findUser: function(req, res) {
+
     User.findById(req.params.user_id, function(err, user) {
       if(err)
         res.send(err);
