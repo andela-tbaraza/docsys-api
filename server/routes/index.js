@@ -55,6 +55,5 @@ module.exports = (router) => {
   require('./users/userRoutes')(router);
   require('./documents/documentRoutes')(router);
   require('./roles/roleRoutes')(router);
-
   return router;
 };
