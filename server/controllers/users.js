@@ -1,9 +1,5 @@
 const User = require('../models/users');
 const Document = require('../models/documents');
-const helpers = require('../middlewares');
-
-
-
 
 module.exports = {
   // Adding a new user

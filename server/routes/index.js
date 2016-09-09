@@ -3,7 +3,6 @@ const config = require('../../config.js');
 
 module.exports = (router) => {
 
-
   //test route to make sure everything is working
   router.get('/', function(req, res) {
     res.json({
@@ -13,9 +12,9 @@ module.exports = (router) => {
 
   require('./users/authRoute')(router);
 
-
   // middleware to use for all requests
   router.use(function(req, res, next) {
+
     // check for the token in the header, post parameters or url parameters
     let token = req.headers['x-access-token'] || req.body.token || req.param.token;
 
@@ -48,8 +47,6 @@ module.exports = (router) => {
     }
     // next();
   });
-
-
 
   require('./users/userRoutes')(router);
   require('./documents/documentRoutes')(router);

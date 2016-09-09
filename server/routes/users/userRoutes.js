@@ -18,4 +18,3 @@ module.exports = (router) => {
   router.get('/users/:id/documents', daemon.hasAccess(['admin', 'user'], 'userId', 'params'), controller.findDocuments);
 
 };
-// daemon

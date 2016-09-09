@@ -14,10 +14,11 @@ module.exports = {
         throw err;
       } else {
         const document = new Document(); // creating an instance of Document model
+        
         // values to be added to new instance
         document.title = req.body.title;
         document.content = req.body.content;
-        document.ownerId = req.decoded._id; //     console.log(req.decoded);
+        document.ownerId = req.decoded._id; // console.log(req.decoded);
         document.roleId = id;
 
         if (req.body.view) {
