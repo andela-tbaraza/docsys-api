@@ -3,7 +3,7 @@ const daemon = require('../../middlewares');
 
 module.exports = (router) => {
   // GET /users
-  router.get('/users', daemon.hasAccess(['admin'], 'userId', 'params'), controller.retrieve);
+  router.get('/users', daemon.userAccess(['admin']), controller.retrieve);
 
   // GET /users/:user_id
   router.get('/users/:user_id', daemon.hasAccess(['user', 'admin'], 'userId', 'params'), controller.findUser);
