@@ -21,6 +21,7 @@ const DocumentSchema = new Schema({
   },
   view: {
     type: String,
+    default: 'private',
     ref: 'View'
   }
 },

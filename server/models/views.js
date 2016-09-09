@@ -3,8 +3,8 @@ const mongoose = require('mongoose');
 const ViewSchema = new mongoose.Schema({
   view: {
     type: String,
-    enum: ['private', 'public'],
-    default: 'private'
+    unique: true,
+    enum: ['private', 'public']
   }
 });
 
