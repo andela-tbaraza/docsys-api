@@ -19,7 +19,10 @@ module.exports = {
         document.content = req.body.content;
         document.ownerId = req.decoded._id; //     console.log(req.decoded);
         document.roleId = id;
-        document.view = req.body.view;
+
+        if (req.body.view) {
+          document.view = req.body.view;
+        }
 
         // save the document and check for errors
         document.save(function(err) {
@@ -107,7 +110,7 @@ module.exports = {
   },
 
   deleteDocument: function(req, res) {
-    
+
     Document.remove({
       _id: req.params.document_id
     }, function(err) {
