@@ -1,3 +1,5 @@
+/* eslint-disable no-undef*/
+
 var chai = require('chai');
 
 var assert = chai.assert;
