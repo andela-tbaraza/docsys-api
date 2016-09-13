@@ -1,24 +1,24 @@
 /* eslint-disable no-undef*/
 // const assert = chai.assert;
 const seed = require('../seeder/seed.js');
-var supertest = require('supertest');
-// let server = require('../../server.js');
+var request = require('supertest');
+let server = require('../../server.js');
 const should = require('should');
 
-var server = supertest.agent('http://localhost:8080');
+// var server = supertest.agent('http://localhost:8080');
 
 // const users = require('../../server/models/users');
 // chai.use(request);
 
 beforeEach((done) => {
-  seed.seeder;
+  seed.seeder();
   done();
 });
 
 describe('User', () => {
   it('should validate that a new user created is unique', (done) => {
-    // request(server)
-    server
+    request(server)
+    // server
      .post('/api/users')
      .send({'first': 'tonida',
      'last': 'baraza',
