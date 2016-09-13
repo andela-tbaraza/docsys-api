@@ -4,7 +4,7 @@
   "private": true,
   "main": "server.js",
   "scripts": {
-    "test": "istanbul cover ./node_modules/mocha/bin/_mocha test/server/*.spec.js --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
+    "test": "istanbul cover --include-all-sources ./node_modules/mocha/bin/_mocha test/server/*.spec.js && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
   },
   "dependencies": {
     "async": "^2.0.1",
@@ -25,9 +25,13 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "coveralls": "^2.11.12",
+    "dotenv": "^2.0.0",
+    "eslint": "^3.5.0",
     "istanbul": "^0.4.5",
     "mocha": "^3.0.2",
     "mocha-lcov-reporter": "^1.2.0",
-    "should": "^11.1.0"
+    "mongoose-seed": "^0.3.1",
+    "should": "^11.1.0",
+    "supertest": "^2.0.0"
   }
 }
