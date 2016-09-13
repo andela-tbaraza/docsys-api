@@ -2,6 +2,9 @@ const seeder = require('mongoose-seed');
 const config = require('../../config.js');
 const path = require('path');
 
+//During the test the env variable is set to test
+process.env.NODE_ENV = 'test';
+
 // Data array containing seed data - documents organized by Model
 var data = [
   {
@@ -24,7 +27,7 @@ var data = [
 module.exports = {
   // Connect to MongoDB via Mongoose
 
-  seeder: seeder.connect(config.test.url, function() {
+  seeder: seeder.connect(config.test, function() {
 
     // Load Mongoose models
     seeder.loadModels([

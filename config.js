@@ -16,7 +16,7 @@ const config = {
 
 module.exports = {
   'development': config,
-  'test': config,
+  'test': {'use_env_variable': 'DATABASE_URL'},
   'production': {'use_env_variable': 'DATABASE_URL'},
   'staging': {'use_env_variable': 'DATABASE_URL'}
 };

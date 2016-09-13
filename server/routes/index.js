@@ -6,7 +6,7 @@ module.exports = (router) => {
   //test route to make sure everything is working
   router.get('/', function(req, res) {
     res.json({
-      'message': 'yaaay! you will like it here'
+      message: 'yaaay! you will like it here'
     });
   });
 
