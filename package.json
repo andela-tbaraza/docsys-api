@@ -4,7 +4,7 @@
   "private": true,
   "main": "server.js",
   "scripts": {
-    "test": "istanbul cover --include-all-sources ./node_modules/mocha/bin/_mocha test/server/*.spec.js && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
+    "test": "NODE_ENV=test istanbul cover --include-all-sources ./node_modules/mocha/bin/_mocha test/server/*.spec.js && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
   },
   "dependencies": {
     "async": "^2.0.1",
