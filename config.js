@@ -1,22 +1,10 @@
-const env = process.env.NODE_ENV || 'development';
-if (env === 'development') {
-  require('dotenv').load();
-}
-
-const config = {
-  username: process.env.DATABASE_USERNAME,
-  password: process.env.DATABASE_PASSWORD,
-  database: process.env.DATABASE_NAME,
-  host: process.env.DATABASE_HOST,
-  dialect: process.env.DATABASE_DIALECT,
-  port: process.env.DATABASE_PORT,
-  url: process.env.DATABASE_URL,
-  secret: process.env.SECRET_KEY
-};
+// const env = process.env.NODE_ENV || 'development';
+// if (env === 'test') {
+//   require('dotenv').load();
+// }
 
 module.exports = {
-  'development': config,
-  'test': {'use_env_variable': 'DATABASE_URL'},
-  'production': {'use_env_variable': 'DATABASE_URL'},
-  'staging': {'use_env_variable': 'DATABASE_URL'}
+  dev_database: process.env.DATABASE_URL,
+  test_database: process.env.DATABASE_URL_TEST,
+  secret: process.env.SECRET_KEY
 };
