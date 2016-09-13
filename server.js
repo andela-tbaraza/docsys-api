@@ -26,11 +26,12 @@ app.use('/api', routes(express.Router()));
 // app.use('/', router);
 // more routes later
 
-// connect to MongoDB
-mongoose.connect(config.database)
-  .then(() =>  console.log('connection succesful'))
-  .catch((err) => console.error(err));
+// // connect to MongoDB
+// mongoose.connect(config.development.url)
+//   .then(() =>  console.log('connection succesful'))
+//   .catch((err) => console.error(err));
 
 // Starting the server
 app.listen(port);
 console.log('We are on port ' + port);
+module.exports = app;
