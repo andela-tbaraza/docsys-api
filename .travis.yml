@@ -3,5 +3,3 @@ node_js:
     - "6.2"
 
 services: mongodb
-after_success:
-  - coveralls
