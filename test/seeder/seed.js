@@ -1,6 +1,5 @@
 /* eslint-disable global-require*/
-
-if (!process.env.DATABASE_URL_TEST) {
+if (process.env.DATABASE_URL_TEST) {
   require('dotenv').load();
 }
 const seeder = require('mongoose-seed');

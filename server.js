@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-if (!process.env.DATABASE_URL_) {
+if (!process.env.DATABASE_URL) {
   require('dotenv').load();
 }
 
