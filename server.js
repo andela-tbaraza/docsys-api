@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-if (!process.env.DATABASE_URL_TEST) {
+if (!process.env.DATABASE_URL_) {
   require('dotenv').load();
 }
 
@@ -10,13 +10,15 @@ const bodyParser = require('body-parser');
 const config = require('./config.js');
 
 // connect to MongoDB
-const databaseUri = process.env.NODE_ENV === 'test' ?
-process.env.DATABASE_URL_TEST :
-process.env.DATABASE_URL;
+// const databaseUri = process.env.NODE_ENV === 'test' ?
+// process.env.DATABASE_URL_TEST :
+// process.env.DATABASE_URL;
 
-mongoose.connect(databaseUri)
-.then(() =>  console.log('Connection succesful'))
-.catch((err) => console.error(err));
+if (process.env.NODE_ENV !== 'test') {
+  mongoose.connect(process.env.DATABASE_URL)
+  .then(() =>  console.log('Connection succesful'))
+  .catch((err) => console.error(err));
+}
 
 // configure app to use bodyParser()
 // this will let us get the data from a POST

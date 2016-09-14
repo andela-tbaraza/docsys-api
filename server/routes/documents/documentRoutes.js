@@ -25,5 +25,4 @@ module.exports = (router) => {
 
   // GET /document/:date
   router.get('/documents/:date/:limit', daemon.userAccess(['admin', 'user']), controller.findByDate);
-
 };

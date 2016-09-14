@@ -1,12 +1,12 @@
 const Role = require('../models/roles.js');
 
 module.exports = {
-  create: function(req, res) {
+  create: ((req, res) => {
     const role = new Role();
     role.title = req.body.title;
 
-    role.save(function(err) {
-      if(err) {
+    role.save((err) => {
+      if (err) {
         res.send(err);
       }
 
@@ -15,14 +15,26 @@ module.exports = {
         message: 'successfully created the role'
       });
     });
-  },
+  }),
 
-  find: function(Req, res) {
-    Role.find(function(err, roles) {
-      if(err) {
+  findRole: ((req, res) => {
+    Role.find((err, roles) => {
+      if (err) {
         res.send(err);
       }
-      res.send(roles);
+      return res.send(roles);
     });
-  }
+  }),
+
+  deleteRole: ((req, res) => {
+    Role.remove({ _id: req.params.role_id }, (err) => {
+      if (err) {
+        res.send(err);
+      }
+      res.json({
+        success: true,
+        message: 'successfully deleted role'
+      });
+    });
+  })
 };

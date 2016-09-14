@@ -1,5 +1,5 @@
-var controller = require('../../controllers/users');
-var authController = require('../../controllers/auth');
+const controller = require('../../controllers/users');
+const authController = require('../../controllers/auth');
 
 
 module.exports = (router) => {
@@ -8,5 +8,4 @@ module.exports = (router) => {
 
   // authenticate user
   router.post('/login', authController.authenticateUser);
-  
 };

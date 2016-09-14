@@ -1,41 +1,37 @@
 const Document = require('../models/documents');
 
-module.exports ={
-  hasAccess: function hasAccess(accessLevel, userId, params) {
-    return function(req, res, next) {
-      if (accessLevel.indexOf(req.decoded.title) > -1) {
-        if (req.decoded.title === 'user') {
+module.exports = {
+  hasAccess: ((accessLevel, userId, params) => {
+    return ((req, res, next) => {
+      if (accessLevel.indexOf(req.decoded.role) > -1) {
+        if (req.decoded.role === 'user') {
           params = req.params.user_id;
           userId = req.decoded._id;
 
-          if(userId !== params) {
+          if (userId !== params) {
             res.send({
               message: 'Not authorized'
             });
           } else {
             return next();
           }
-
         } else {
           return next();
-
         }
-
       }
-    };
+    });
+  }),
 
-  },
-
-  docAccess: function(accessLevel, params) {
+  docAccess: ((accessLevel, params) => {
     return function(req, res, next) {
       params = req.params.document_id;
-      Document.findById(params).select('ownerId').exec(function(err, id) {
-        if(err) {
+      Document.findById(params).select('ownerId').exec((err, id) => {
+        if (err) {
           throw err;
         } else {
-          if (accessLevel.indexOf(req.decoded.title) >  -1) {
-            if (req.decoded.title === 'user') {
-              let ownerId = id.ownerId;
+          if (accessLevel.indexOf(req.decoded.role) >  -1) {
+            if (req.decoded.role === 'user') {
+              const ownerId = id.ownerId;
               if (ownerId !== req.decoded._id) {
                 res.send({
                   success: false,
@@ -44,7 +40,6 @@ module.exports ={
               } else {
                 return next();
               }
-
             } else {
               return next();
             }
@@ -52,11 +47,11 @@ module.exports ={
         }
       });
     };
-  },
+  }),
 
-  userAccess: function userAccess(accessLevel) {
+  userAccess: ((accessLevel) => {
     return function (req, res, next) {
-      if (accessLevel.indexOf(req.decoded.title) >  -1) {
+      if (accessLevel.indexOf(req.decoded.role) > -1) {
         return next();
       } else {
         return res.json({
@@ -64,8 +59,7 @@ module.exports ={
           message: 'Not authorized'
         });
       }
-
     };
-  }
+  })
 
 };
