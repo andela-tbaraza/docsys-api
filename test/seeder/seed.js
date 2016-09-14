@@ -1,5 +1,5 @@
 /* eslint-disable global-require*/
-if (process.env.DATABASE_URL_TEST) {
+if (!process.env.DATABASE_URL) {
   require('dotenv').load();
 }
 const seeder = require('mongoose-seed');
@@ -7,7 +7,7 @@ const path = require('path');
 
 
 // During the test the env variable is set to test
-process.env.NODE_ENV = 'test';
+// process.env.NODE_ENV = 'test';
 // Data array containing seed data - documents organized by Model
 const data = [{
   model: 'User',
