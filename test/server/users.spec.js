@@ -3,6 +3,7 @@ const seed = require('../seeder/seed.js');
 const server = require('../../server.js');
 const request = require('supertest');
 const should = require('should');
+let token;
 
 // var server = supertest.agent('http://localhost:8080');
 
@@ -11,7 +12,16 @@ const should = require('should');
 
 before((done) => {
   const cb = () => {
-    done();
+    request(server)
+      .post('/api/login')
+      .send({
+        username: 'tonee',
+        password: 'admin'
+      })
+      .end((err, res) => {
+        token = res.body.token;
+        done();
+      });
   };
   seed.seeder(cb);
 });
@@ -85,11 +95,17 @@ describe('User', () => {
       });
   });
 
-  it.skip('should validate that all users are returned', (done) => {
+
+  it('should validate that all users are returned', (done) => {
     request(server)
-      .get('/users')
+      .get('/api/users')
+      .set('x-access-token', token)
       .expect('Content-Type', /json/)
       .end((err, res) => {
+        if (err) {
+          res.send(err);
+          done();
+        }
         res.body.success.should.equal(true);
         // res.body.uses.should.equal();
         done();

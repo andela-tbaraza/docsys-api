@@ -35,7 +35,7 @@ module.exports = {
             _id: user._id,
             role: user.role
             // viewId: user.viewId
-          }, config.secret, {
+          }, process.env.SECRET_KEY, {
             expiresIn: '24h' // token expires in 24 hrs
           });
 
