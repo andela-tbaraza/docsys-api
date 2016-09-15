@@ -9,32 +9,34 @@ const should = require('should');
 // const users = require('../../server/models/users');
 // chai.use(request);
 
-beforeEach((done) => {
-  seed.seeder();
-  done();
+before((done) => {
+  const cb = () => {
+    done();
+  }
+  seed.seeder(cb);
 });
 
 describe('User', () => {
-  // it.skip('should validate that a new user created is unique', (done) => {
-  //   request(server)
-  //     .post('/api/users')
-  //     .send({
-  //       'firstname': 'tonida',
-  //       'lastname': 'baraza',
-  //       'username': 'tonee',
-  //       'email': 'toni@gmail.com',
-  //       'title': 'user',
-  //       'password': 'admin'
-  //     })
-  //     .expect('Content-Type', /json/)
-  //     .expect(200)
-  //     .end((err, res) => {
-  //       res.body.message.should.equal('That username already exists');
-  //       res.body.success.should.equal(false);
-  //       res.status.should.equal(200);
-  //     });
-  //   done();
-  // });
+  it('should validate that a new user created is unique', (done) => {
+    request(server)
+      .post('/api/users')
+      .send({
+        firstname: 'tonida',
+        lastname: 'baraza',
+        username: 'tonee',
+        email: 'toni@gmail.com',
+        title: 'user',
+        password: 'admin'
+      })
+      .expect('Content-Type', /json/)
+      .expect(200)
+      .end((err, res) => {
+        res.body.message.should.equal('That username already exists');
+        res.body.success.should.equal(false);
+        res.status.should.equal(200);
+        done();
+      });
+  });
 
   it('should validate that a new user created has a role defined', (done) => {
     request(server)
