@@ -1,30 +1,19 @@
 const controller = require('../../controllers/documents');
-const daemon = require('../../middlewares');
+const access = require('../../middlewares');
 
 module.exports = (router) => {
   // POST /documents
-  router.post('/documents', daemon.userAccess(['user', 'admin']), controller.create);
+  router.post('/documents', access.userAccess(['user', 'admin']), controller.create);
 
   // GET /documents
-  router.get('/documents', daemon.userAccess(['user', 'admin']), controller.find);
-
-  // GET /documents/:limit
-  router.get('/documents/search', daemon.userAccess(['admin', 'user']), controller.findByLimit);
+  router.get('/documents', access.userAccess(['user', 'admin']), controller.findAll);
 
   // GET /documents/:document_id
-  router.get('/documents/:document_id', daemon.docAccess(['admin', 'user'], 'params'), controller.findDocument);
+  router.get('/documents/:document_id', access.docAccess(['admin', 'user'], 'params'), controller.findDocument);
 
   // PUT  /documents/:document_id
-  router.put('/documents/:document_id', daemon.docAccess(['admin', 'user'], 'params'), controller.updateDocument);
+  router.put('/documents/:document_id', access.docAccess(['admin', 'user'], 'params'), controller.updateDocument);
 
   // DELETE /documents/:document_id
-  router.delete('/documents/:document_id', daemon.docAccess(['admin', 'user'], 'params'), controller.deleteDocument);
-
-  router.get('/documents/search', daemon.userAccess(['admin', 'user']), controller.findByLimit);
-
-  // GET /documents/:role
-  router.get('/documents/:role', daemon.userAccess(['admin']), controller.findByRole);
-
-  // GET /document/:date
-  router.get('/documents/:date/:limit', daemon.userAccess(['admin', 'user']), controller.findByDate);
+  router.delete('/documents/:document_id', access.docAccess(['admin', 'user'], 'params'), controller.deleteDocument);
 };

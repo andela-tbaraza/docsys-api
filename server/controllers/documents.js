@@ -5,7 +5,7 @@ module.exports = {
   // adding a new document
   create: ((req, res) => {
     Role.findOne({
-      role: req.decoded.role
+      title: req.decoded.role
     }).select('_id').exec((err, id) => {
       if (err) {
         throw err;
@@ -35,43 +35,44 @@ module.exports = {
     });
   }),
 
-  find: ((req, res) => {
-    let limit = req.query.limit;
-    limit = parseInt(limit, 10);
-    Document.aggregate(
-        { $sort: { createdAt: -1 } }, ((err, documents) => {
-          if (err) {
-            res.send(err);
-          } else if (req.decoded.role === 'user') {
-            documents.forEach((doc) => {
-              if (doc.ownerId === req.decoded._id || doc.view === 'public') {
-                documents = doc
-                res.json(documents);
-              }
-            })
-          } else {
-            res.json(documents);
-          }
-        }));
-
-
-    // if (req.decoded.role === 'user') {
-    //   Document.find({
-    //     $or: [{ ownerId: req.decoded._id }, { view: 'public' }]
-    //   }, ((err, documents) => {
-    //     if (err) {
-    //       res.send(err);
-    //     }
-    //     res.json(documents);
-    //   }));
-    // } else {
-    //   Document.find((err, documents) => {
-    //     if (err) {
-    //       return res.send(err);
-    //     }
-    //     return res.json(documents);
-    //   });
-    // }
+  findAll: ((req, res) => {
+    const date = req.query.date;
+    let limit = req.query.limit || req.params.limit;
+    let skip = req.query.skip || 0;
+    if (date && limit) {
+      Document.find({
+        createdAt: date
+      })
+      .limit(parseInt(limit, 10))
+      .exec((err, documents) => {
+        if (err) {
+          res.send(err);
+        }
+        res.json(documents);
+      });
+    } else if (limit) {
+      limit = parseInt(limit, 10);
+      skip = parseInt(skip, 10);
+      Document.find().sort({ createdAt: -1 })
+        .limit(limit)
+        .skip(skip)
+        .find({ $or: [{ ownerId: req.decoded._id }, { view: 'public' }]
+      }, ((err, documents) => {
+        if (err) {
+          res.send(err);
+        }
+        res.json(documents);
+      }));
+    } else {
+      Document.find().sort({ createdAt: -1 }).find({
+        $or: [{ ownerId: req.decoded._id }, { view: 'public' }]
+      }, ((err, documents) => {
+        if (err) {
+          res.send(err);
+        }
+        res.json(documents);
+      }));
+    }
   }),
 
 
@@ -118,85 +119,6 @@ module.exports = {
         message: 'successfully deleted the document'
       });
     });
-  }),
-
-  findByLimit: ((req, res) => {
-    let limit = req.query.limit || req.params.limit;
-    let skip = req.query.skip || 0;
-    if (limit) {
-      limit = parseInt(limit, 10);
-      skip = parseInt(skip, 10);
-      Document.aggregate(
-          { $sort: { createdAt: -1 } }, { $limit: limit }, { $skip: skip },
-        ((err, documents) => {
-          if (err) {
-            res.send(err);
-          } else if (req.decoded.role === 'user') {
-            documents.forEach((doc) => {
-              if (doc.ownerId === req.decoded._id || doc.view === 'public') {
-                documents = doc
-                res.json({ success: true, documents: documents});
-              }
-            })
-          } else {
-            res.json({ success: true, documents: documents });
-          }
-          // console.log(documents)
-        }));
-    } else {
-      res.json({
-        success: false,
-        message: 'no limit specified'
-      });
-    }
-  }),
-
-  findByRole: ((req, res) => {
-    let limit = req.headers.limit;
-    limit = parseInt(limit, 10);
-
-    if (limit) {
-      // console.log(limit)
-      Role.findOne({
-        title: req.params.role
-      }).select('_id').exec((err, id) => {
-        if (err) {
-          // console.log(req.params.role)
-          throw (err);
-        } else {
-          Document.find(
-            { roleId: id })
-            .limit(limit).exec((error, documents) => {
-              if (error) {
-                res.send(error);
-              }
-              res.json(documents);
-            });
-        }
-      });
-    } else {
-      res.json({
-        success: false,
-        message: 'no document found'
-      });
-    }
-  }),
-
-  findByDate: ((req, res) => {
-    // let limit = req.headers['limit'];
-    // const limit = parseInt(limit);
-
-    Document.find({
-      createdAt: req.query.date
-    })
-    .limit(parseInt(req.params.limit, 10))
-    .exec((err, documents) => {
-      if (err) {
-        res.send(err);
-      }
-      res.json(documents);
-    });
   })
-
 
 };
