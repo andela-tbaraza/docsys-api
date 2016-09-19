@@ -55,17 +55,15 @@ module.exports = {
   }),
 
   updateUser: ((req, res) => {
-    User.findById(req.params.user_id, ((err, user) => {
+    User.findByIdAndUpdate(req.params.user_id, { $set: {
+      name: { firstname: req.body.firstname, lastname: req.body.lastname },
+      username: req.body.username,
+      email: req.body.username,
+      password: req.body.password }
+    }, { new: true }, ((err, user) => {
       if (err) {
         res.send(err);
       }
-
-      // update the user info only if it's new
-      if (req.body.firstname) user.name.firstname = req.body.firstname;
-      if (req.body.lastname) user.name.lastname = req.body.lastname;
-      if (req.body.username) user.username = req.body.username;
-      if (req.body.email) user.email = req.body.email;
-      if (req.body.password) user.password = req.body.password;
 
       // save the user
       user.save((error) => {
@@ -73,7 +71,7 @@ module.exports = {
           return res.send(error);
         }
         // return message
-        return res.json({ message: 'user updated' });
+        return res.json({ success: true, message: 'user updated', user: user });
       });
     }));
   }),

@@ -1,6 +1,9 @@
 /* eslint-disable global-require*/
 const jwt = require('jsonwebtoken');
 const config = require('../../config.js');
+const users = require('./users/userRoutes');
+const documents = require('./documents/documentRoutes');
+const roles = require('./roles/roleRoutes');
 
 module.exports = (router) => {
   // test route to make sure everything is working
@@ -42,12 +45,11 @@ module.exports = (router) => {
         message: 'no token provided'
       });
     }
-    // next();
   });
 
-  require('./users/userRoutes')(router);
-  require('./documents/documentRoutes')(router);
-  require('./roles/roleRoutes')(router);
+  users(router);
+  documents(router);
+  roles(router);
 
   return router;
 };

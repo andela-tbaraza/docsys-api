@@ -12,7 +12,7 @@ function Seeder() {
 }
 
 Seeder.prototype.connect = function(db, cb) {
-  var _this = this;
+  const _this = this;
 
   if (mongoose.connection.readyState == 1) {
     _this.connected = true;

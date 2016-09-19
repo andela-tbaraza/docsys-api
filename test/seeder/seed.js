@@ -11,10 +11,11 @@ module.exports = {
       // Load Mongoose models
       seeder.loadModels([
         path.join(__dirname, '../../server/models/users.js'),
-        path.join(__dirname, '../../server/models/documents.js')
+        path.join(__dirname, '../../server/models/documents.js'),
+        path.join(__dirname, '../../server/models/roles.js')
       ])
       // Clear specified collections
-      seeder.clearModels(['User', 'Document'], () => {
+      seeder.clearModels(['User', 'Document', 'Role'], () => {
         seeder.populateModels(data, () => {
           callback();
         });

@@ -106,6 +106,7 @@ describe('User', () => {
           res.send(err);
           done();
         }
+        // console.log(res.body);
         res.body.success.should.equal(true);
         // res.body.uses.should.equal();
         done();

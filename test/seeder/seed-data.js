@@ -30,4 +30,28 @@ module.exports = [{
       password: '*dinNNerQ'
     }
   ]
+},
+{
+  model: 'Role',
+  documents: [
+    {
+      role: 'admin'
+    // },
+    // {
+    //   role: 'public'
+    }
+  ]
+},
+{
+  model: 'Document',
+  documents: [
+    {
+      title: 'Christ',
+      content: 'Christ is the Lord'
+    },
+    {
+      title: 'Penny',
+      content: 'I don \'t know what she wants'
+    }
+  ]
 }];

@@ -36,23 +36,42 @@ module.exports = {
   }),
 
   find: ((req, res) => {
-    if (req.decoded.title === 'user') {
-      Document.find({
-        $or: [{ ownerId: req.decoded._id }, { view: 'public' }]
-      }, ((err, documents) => {
-        if (err) {
-          res.send(err);
-        }
-        res.json(documents);
-      }));
-    } else {
-      Document.find((err, documents) => {
-        if (err) {
-          return res.send(err);
-        }
-        return res.json(documents);
-      });
-    }
+    let limit = req.query.limit;
+    limit = parseInt(limit, 10);
+    Document.aggregate(
+        { $sort: { createdAt: -1 } }, ((err, documents) => {
+          if (err) {
+            res.send(err);
+          } else if (req.decoded.role === 'user') {
+            documents.forEach((doc) => {
+              if (doc.ownerId === req.decoded._id || doc.view === 'public') {
+                documents = doc
+                res.json(documents);
+              }
+            })
+          } else {
+            res.json(documents);
+          }
+        }));
+
+
+    // if (req.decoded.role === 'user') {
+    //   Document.find({
+    //     $or: [{ ownerId: req.decoded._id }, { view: 'public' }]
+    //   }, ((err, documents) => {
+    //     if (err) {
+    //       res.send(err);
+    //     }
+    //     res.json(documents);
+    //   }));
+    // } else {
+    //   Document.find((err, documents) => {
+    //     if (err) {
+    //       return res.send(err);
+    //     }
+    //     return res.json(documents);
+    //   });
+    // }
   }),
 
 
@@ -66,20 +85,13 @@ module.exports = {
   }),
 
   updateDocument: ((req, res) => {
-    Document.findById(req.params.document_id, ((err, document) => {
+    Document.findByIdAndUpdate(req.params.document_id, { $set: {
+      title: req.body.title,
+      content: req.body.content }
+    }, { new: true }, ((err, document) => {
       if (err) {
         res.send(err);
       }
-
-      // update the document only if it's new
-      // document.title = req.body.title;
-      // document.content = req.body.content;
-
-      // if(document.isModified('title') || document.isModified('content')) {
-      //   document.title = req.body.title;
-      //   document.content = req.body.content;
-      if (req.body.title) document.title = req.body.title;
-      if (req.body.content) document.content = req.body.content;
 
       // save the document
       document.save((error) => {
@@ -87,12 +99,11 @@ module.exports = {
           res.send(error);
         }
         res.json({
-          message: 'document updated'
+          success: true,
+          message: 'document updated',
+          document: document
         });
       });
-      // res.json({
-      //   message: 'no change has been made to the document'
-      // });
     }));
   }),
 
@@ -103,8 +114,6 @@ module.exports = {
       if (err) {
         res.send(err);
       }
-
-      // else return a message
       res.json({
         message: 'successfully deleted the document'
       });
@@ -112,16 +121,26 @@ module.exports = {
   }),
 
   findByLimit: ((req, res) => {
-    let limit = req.headers.limit || req.query.limit || req.params.limit;
+    let limit = req.query.limit || req.params.limit;
+    let skip = req.query.skip || 0;
     if (limit) {
       limit = parseInt(limit, 10);
+      skip = parseInt(skip, 10);
       Document.aggregate(
-          { $sort: { createdAt: -1 } }, { $limit: limit },
+          { $sort: { createdAt: -1 } }, { $limit: limit }, { $skip: skip },
         ((err, documents) => {
           if (err) {
             res.send(err);
+          } else if (req.decoded.role === 'user') {
+            documents.forEach((doc) => {
+              if (doc.ownerId === req.decoded._id || doc.view === 'public') {
+                documents = doc
+                res.json({ success: true, documents: documents});
+              }
+            })
+          } else {
+            res.json({ success: true, documents: documents });
           }
-          res.json(documents);
           // console.log(documents)
         }));
     } else {
@@ -168,7 +187,7 @@ module.exports = {
     // const limit = parseInt(limit);
 
     Document.find({
-      createdAt: req.params.date
+      createdAt: req.query.date
     })
     .limit(parseInt(req.params.limit, 10))
     .exec((err, documents) => {

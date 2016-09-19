@@ -8,6 +8,9 @@ module.exports = (router) => {
   // GET /documents
   router.get('/documents', daemon.userAccess(['user', 'admin']), controller.find);
 
+  // GET /documents/:limit
+  router.get('/documents/search', daemon.userAccess(['admin', 'user']), controller.findByLimit);
+
   // GET /documents/:document_id
   router.get('/documents/:document_id', daemon.docAccess(['admin', 'user'], 'params'), controller.findDocument);
 
@@ -17,8 +20,7 @@ module.exports = (router) => {
   // DELETE /documents/:document_id
   router.delete('/documents/:document_id', daemon.docAccess(['admin', 'user'], 'params'), controller.deleteDocument);
 
-  // GET /documents/:limit
-  router.get('/documents/:limit', daemon.userAccess(['admin', 'user']), controller.findByLimit);
+  router.get('/documents/search', daemon.userAccess(['admin', 'user']), controller.findByLimit);
 
   // GET /documents/:role
   router.get('/documents/:role', daemon.userAccess(['admin']), controller.findByRole);

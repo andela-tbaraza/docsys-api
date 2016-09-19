@@ -2,11 +2,16 @@ const Role = require('../models/roles.js');
 
 module.exports = {
   create: ((req, res) => {
-    const role = new Role();
-    role.title = req.body.title;
+    const title = new Role();
+    title.role = req.body.role;
 
-    role.save((err) => {
+    title.save((err) => {
       if (err) {
+        if (err.code === 11000) {
+          return res.json({
+            success: false,
+            message: 'That role already exists' });
+        }
         res.send(err);
       }
 
@@ -22,7 +27,7 @@ module.exports = {
       if (err) {
         res.send(err);
       }
-      return res.send(roles);
+      return res.json({ success: true, roles: roles });
     });
   }),
 
