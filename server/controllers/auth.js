@@ -7,7 +7,7 @@ module.exports = {
     // find the user by name, username and password
     User.findOne({
       username: req.body.username
-    }).select('email username password role').exec((err, user) => {
+    }).select('email username password title').exec((err, user) => {
       if (err) {
         throw err;
       }
@@ -32,7 +32,7 @@ module.exports = {
             username: user.username,
             email: user.email,
             _id: user._id,
-            role: user.role
+            title: user.title
             // viewId: user.viewId
           }, process.env.SECRET_KEY, {
             expiresIn: '24h' // token expires in 24 hrs

@@ -5,7 +5,7 @@ module.exports = {
   // adding a new document
   create: ((req, res) => {
     Role.findOne({
-      title: req.decoded.role
+      title: req.decoded.title
     }).select('_id').exec((err, id) => {
       if (err) {
         throw err;
@@ -24,12 +24,17 @@ module.exports = {
         // save the document and check for errors
         document.save((error) => {
           if (error) {
-            res.send(error);
+            if (error.code === 11000) {
+              res.json({ success: false, message: 'that title already exists' });
+            } else {
+              res.send(error);
+            }
+          } else {
+            res.json({
+              message: 'document created',
+              document: document
+            });
           }
-          res.json({
-            message: 'document created',
-            document: document
-          });
         });
       }
     });

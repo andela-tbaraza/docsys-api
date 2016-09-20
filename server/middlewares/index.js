@@ -3,8 +3,8 @@ const Document = require('../models/documents');
 module.exports = {
   hasAccess: ((accessLevel, userId, params) => {
     return ((req, res, next) => {
-      if (accessLevel.indexOf(req.decoded.role) > -1) {
-        if (req.decoded.role === 'user') {
+      if (accessLevel.indexOf(req.decoded.title) > -1) {
+        if (req.decoded.title === 'user') {
           params = req.params.user_id;
           userId = req.decoded._id;
 
@@ -29,8 +29,8 @@ module.exports = {
         if (err) {
           throw err;
         } else {
-          if (accessLevel.indexOf(req.decoded.role) >  -1) {
-            if (req.decoded.role === 'user') {
+          if (accessLevel.indexOf(req.decoded.title) >  -1) {
+            if (req.decoded.title === 'user') {
               const ownerId = id.ownerId;
               if (ownerId !== req.decoded._id) {
                 res.send({
@@ -51,9 +51,10 @@ module.exports = {
 
   userAccess: ((accessLevel) => {
     return function (req, res, next) {
-      if (accessLevel.indexOf(req.decoded.role) > -1) {
+      if (accessLevel.indexOf(req.decoded.title) > -1) {
         return next();
       } else {
+        console.log(req.decoded.title);
         return res.json({
           success: false,
           message: 'Not authorized'

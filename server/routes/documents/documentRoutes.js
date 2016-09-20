@@ -6,7 +6,7 @@ module.exports = (router) => {
   router.post('/documents', access.userAccess(['user', 'admin']), controller.create);
 
   // GET /documents
-  router.get('/documents', access.userAccess(['user', 'admin']), controller.findAll);
+  router.get('/documents', controller.findAll);
 
   // GET /documents/:document_id
   router.get('/documents/:document_id', access.docAccess(['admin', 'user'], 'params'), controller.findDocument);
@@ -17,3 +17,5 @@ module.exports = (router) => {
   // DELETE /documents/:document_id
   router.delete('/documents/:document_id', access.docAccess(['admin', 'user'], 'params'), controller.deleteDocument);
 };
+
+// 57e0d545f4df7de509f7659d
