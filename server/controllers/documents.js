@@ -75,6 +75,7 @@ module.exports = {
         if (err) {
           res.send(err);
         }
+        console.log(req);
         res.json(documents);
       }));
     }
