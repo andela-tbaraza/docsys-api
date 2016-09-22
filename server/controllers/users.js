@@ -14,8 +14,8 @@ module.exports = {
     user.email = req.body.email;
     user.password = req.body.password;
 
-    if (req.body.role) {
-      user.role = req.body.role;
+    if (req.body.title) {
+      user.title = req.body.title;
     }
 
     // save user created and check for errors

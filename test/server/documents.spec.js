@@ -43,7 +43,7 @@ describe('Document', () => {
 
   it('validates that all documents are returned, limited by a specified number', (done) => {
     request(server)
-      .get('/api/documents/search?limit=2')
+      .get('/api/documents?limit=2')
       .set('x-access-token', token)
       // .query({ page: 1 })
       // .query({ limit: '2' })

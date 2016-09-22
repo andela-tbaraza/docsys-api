@@ -67,7 +67,7 @@ describe('User', () => {
         // console.log(res.body);
         res.body.message.should.equal('user created');
         res.body.success.should.equal(true);
-        res.body.user.should.have.property('role');
+        res.body.user.should.have.property('title');
         res.status.should.equal(200);
         done();
       });

@@ -8,7 +8,7 @@ module.exports = [{
       },
       username: 'tonee',
       email: 'toni@gmail.com',
-      role: 'admin',
+      title: 'admin',
       password: 'admin'
     },
     {
@@ -35,7 +35,7 @@ module.exports = [{
   model: 'Role',
   documents: [
     {
-      role: 'admin'
+      title: 'admin'
     // },
     // {
     //   role: 'public'
