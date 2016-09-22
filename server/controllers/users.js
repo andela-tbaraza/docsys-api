@@ -1,5 +1,8 @@
 const User = require('../models/users');
 const Document = require('../models/documents');
+const access = require('../middlewares');
+
+const rbac = access.rbac;
 
 module.exports = {
   // Adding a new user
@@ -32,17 +35,36 @@ module.exports = {
     });
   }),
 
-  retrieve: ((req, res) => {
-    User.find((err, users) => {
-      // console.log(User.roles)
-      if (err) {
-        return res.send(err);
+  findAll: ((req, res) => {
+    rbac.can(req.decoded.title, 'users:get:all', ((err, can) => {
+      if (err || !can) {
+        rbac.can(req.decoded.title, 'user:get', ((err, can) => {
+          if (err || !can) {
+            res.json({ success: false, message: 'Not authorized', err: err });
+          } else {
+            User.findById(req.decoded._id, ((err, user) => {
+              if (err) {
+                return res.send(err);
+              }
+              return res.json({
+                success: true,
+                user: user
+              });
+            }))
+          }
+        }))
+      } else {
+        User.find((err, users) => {
+          if (err) {
+            return res.send(err);
+          }
+          return res.json({
+            success: true,
+            users: users
+          });
+        });
       }
-      return res.json({ success: true, users: users });
-      // res.json({
-      //   message: 'not authorised'
-      // });
-    });
+    }));
   }),
 
   findUser: ((req, res) => {
@@ -56,19 +78,22 @@ module.exports = {
 
   updateUser: ((req, res) => {
     User.findByIdAndUpdate(req.params.user_id, { $set: {
-      name: { firstname: req.body.firstname, lastname: req.body.lastname },
-      username: req.body.username,
-      email: req.body.username,
-      password: req.body.password }
+      // name: { firstname: req.body.firstname, lastname: req.body.lastname },
+      username: req.body.username
+      // email: req.body.email,
+      // password: req.body.password
+    }
     }, { new: true }, ((err, user) => {
       if (err) {
         res.send(err);
       }
+      console.log('++++++++++++',user);
+
 
       // save the user
       user.save((error) => {
-        if (error) {
-          return res.send(error);
+        if (err) {
+          return res.send(err);
         }
         // return message
         return res.json({ success: true, message: 'user updated', user: user });

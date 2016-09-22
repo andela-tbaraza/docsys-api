@@ -1,19 +1,19 @@
 const controller = require('../../controllers/users');
-const daemon = require('../../middlewares');
+const access = require('../../middlewares');
 
 module.exports = (router) => {
-  // GET /users
-  router.get('/users', daemon.userAccess(['admin']), controller.retrieve);
+  // GET all users
+  router.get('/users', controller.findAll);
 
-  // GET /users/:user_id
-  router.get('/users/:user_id', daemon.hasAccess(['user', 'admin'], 'userId', 'params'), controller.findUser);
+  // GET users based on id
+  router.get('/users/:user_id', access.userAccess(), controller.findUser);
 
-  // PUT /users/:user_id
-  router.put('/users/:user_id', daemon.hasAccess(['user', 'admin'], 'userId', 'params'), controller.updateUser);
+  // PUT update user
+  router.put('/users/:user_id', access.userAccess(), controller.updateUser);
 
-  // DELETE /users/:user_id
-  router.delete('/users/:user_id', daemon.hasAccess(['user', 'admin'], 'userId', 'params'), controller.deleteUser);
+  // DELETE user
+  router.delete('/users/:user_id', access.userAccess(), controller.deleteUser);
 
   // GET /users/:id/documents
-  router.get('/users/:id/documents', daemon.hasAccess(['admin', 'user'], 'userId', 'params'), controller.findDocuments);
+  router.get('/users/:id/documents', access.userAccess(), controller.findDocuments);
 };

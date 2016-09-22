@@ -9,5 +9,5 @@ module.exports = (router) => {
   router.get('/roles', controller.findRole);
 
   // DELETE /roles
-  router.delete('/roles/:role_id', daemon.hasAccess(['admin']), controller.deleteRole);
+  router.delete('/roles/:role_id', controller.deleteRole);
 };

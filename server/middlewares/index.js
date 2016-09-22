@@ -1,58 +1,61 @@
 const Document = require('../models/documents');
-var RBAC = require('easy-rbac');
+const RBAC = require('easy-rbac');
 
 const opts = {
   user: {
-    can: ['doc:create', 'docs:get', {
+    can: ['doc:create', 'docs:get', 'user:create', 'user:get', {
       name: 'doc:delete&update',
       when: (params, callback) => {
-        setImmediate(params.user_id === params.ownerId);
+        setImmediate(params.userId === params.ownerId);
+      }
+    }, {
+      name: 'user:delete&update',
+      when: (params, callback) => {
+        setImmediate(params.userId === params.id);
       }
     }
   ] },
   admin: {
-    can: ['rule the server', 'doc:delete&update:any', 'docs:get:all'],
+    can: ['rule the server', 'doc:delete&update:any', 'docs:get:all', 'user:deleted&update:any', 'users:get:all'],
     inherits: ['user']
   }
-}
-var rbac = new RBAC(opts);
+};
+const rbac = new RBAC(opts);
 
 module.exports = {
   rbac: rbac,
-  hasAccess: ((accessLevel, userId, params) => {
-    return ((req, res, next) => {
-      if (accessLevel.indexOf(req.decoded.title) > -1) {
-        if (req.decoded.title === 'user') {
-          params = req.params.user_id;
-          userId = req.decoded._id;
 
-          if (userId !== params) {
-            res.send({
-              message: 'Not authorized'
-            });
-          } else {
-            return next();
-          }
+  userAccess: (user_id) => {
+    return ((req, res, next) => {
+      req.params.userId = user_id;
+      rbac.can(req.decoded.title, 'user:deleted&update:any', ((err, can) => {
+        if (err || !can) {
+          rbac.can(req.decoded.title, 'user:delete&update', { userId: req.decoded._id, id: user_id }, ((err, can) => {
+            if (err || !can) {
+              res.json({ success: false, message: 'Not authorized', err: err });
+            } else {
+              return next();
+            }
+          }));
         } else {
           return next();
         }
-      }
+      }));
     });
-  }),
+  },
 
-  docAccess: ((docId) => {
+  docAccess: (docId) => {
     return (req, res, next) => {
-      docId = req.params.document_id;
+      req.params.document_id = docId;
       Document.findById(docId).select('ownerId').exec((err, id) => {
         if (err) {
           throw err;
         } else {
           const idObject = id
-          rbac.can(req.decoded.title, 'doc:delete&update:any', (err, can) => {
-            console.log('------',req.decoded.title);
+          rbac.can(req.decoded.title, 'doc:delete&update:any', ((err, can) => {
             if (err || !can) {
               // we are not allowed
-              rbac.can(req.decoded.title, 'doc:delete&update', { user_id: req.decoded._id, ownerId: idObject.ownerId }, (err, can) => {
+              rbac.can(req.decoded.title, 'doc:delete&update', { userId: req.decoded._id, ownerId: idObject.ownerId }, (err, can) => {
                 if (err || !can) {
                   res.json({ success: false, message: 'Not authorized', err: err })
                 } else {
@@ -64,23 +67,9 @@ module.exports = {
                 // we are allowed
               return next();
             }
-          });
+          }));
         }
       });
     };
-  }),
-
-  userAccess: ((accessLevel) => {
-    return function (req, res, next) {
-      if (accessLevel.indexOf(req.decoded.title) > -1) {
-        return next();
-      } else {
-        return res.json({
-          success: false,
-          message: 'Not authorized'
-        });
-      }
-    };
-  })
-
+  }
 };
