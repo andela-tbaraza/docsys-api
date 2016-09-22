@@ -46,13 +46,14 @@ describe('Role', () => {
     .post('/api/roles')
     .set('x-access-token', token)
     .send({
-      role: 'admin'
+      title: 'admin'
     })
     .end((err, res) => {
       if (err) {
         res.send(err);
         done();
       }
+      console.log(res.body);
       res.body.success.should.equal(false);
       res.body.message.should.equal('That role already exists');
       done();

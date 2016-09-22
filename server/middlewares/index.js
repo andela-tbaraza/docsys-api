@@ -1,6 +1,24 @@
 const Document = require('../models/documents');
+var RBAC = require('easy-rbac');
+
+const opts = {
+  user: {
+    can: ['doc:create', 'docs:get', {
+      name: 'doc:delete&update',
+      when: (params, callback) => {
+        setImmediate(params.user_id === params.ownerId);
+      }
+    }
+  ] },
+  admin: {
+    can: ['rule the server', 'doc:delete&update:any', 'docs:get:all'],
+    inherits: ['user']
+  }
+}
+var rbac = new RBAC(opts);
 
 module.exports = {
+  rbac: rbac,
   hasAccess: ((accessLevel, userId, params) => {
     return ((req, res, next) => {
       if (accessLevel.indexOf(req.decoded.title) > -1) {
@@ -22,28 +40,31 @@ module.exports = {
     });
   }),
 
-  docAccess: ((accessLevel, params) => {
-    return function(req, res, next) {
-      params = req.params.document_id;
-      Document.findById(params).select('ownerId').exec((err, id) => {
+  docAccess: ((docId) => {
+    return (req, res, next) => {
+      docId = req.params.document_id;
+      Document.findById(docId).select('ownerId').exec((err, id) => {
         if (err) {
           throw err;
         } else {
-          if (accessLevel.indexOf(req.decoded.title) >  -1) {
-            if (req.decoded.title === 'user') {
-              const ownerId = id.ownerId;
-              if (ownerId !== req.decoded._id) {
-                res.send({
-                  success: false,
-                  message: 'Not authorized'
-                });
-              } else {
-                return next();
-              }
+          const idObject = id
+          rbac.can(req.decoded.title, 'doc:delete&update:any', (err, can) => {
+            console.log('------',req.decoded.title);
+            if (err || !can) {
+              // we are not allowed
+              rbac.can(req.decoded.title, 'doc:delete&update', { user_id: req.decoded._id, ownerId: idObject.ownerId }, (err, can) => {
+                if (err || !can) {
+                  res.json({ success: false, message: 'Not authorized', err: err })
+                } else {
+                  // we are allowed
+                  return next();
+                }
+              });
             } else {
+                // we are allowed
               return next();
             }
-          }
+          });
         }
       });
     };
@@ -54,7 +75,6 @@ module.exports = {
       if (accessLevel.indexOf(req.decoded.title) > -1) {
         return next();
       } else {
-        console.log(req.decoded.title);
         return res.json({
           success: false,
           message: 'Not authorized'
