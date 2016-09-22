@@ -87,8 +87,6 @@ module.exports = {
       if (err) {
         res.send(err);
       }
-      console.log('++++++++++++',user);
-
 
       // save the user
       user.save((error) => {
