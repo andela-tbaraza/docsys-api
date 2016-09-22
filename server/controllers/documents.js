@@ -1,5 +1,8 @@
 const Document = require('../models/documents');
 const Role = require('../models/roles');
+const access = require('../middlewares');
+
+const rbac = access.rbac;
 
 module.exports = {
   // adding a new document
@@ -20,7 +23,6 @@ module.exports = {
         if (req.body.view) {
           document.view = req.body.view;
         }
-
         // save the document and check for errors
         document.save((error) => {
           if (error) {
@@ -45,50 +47,123 @@ module.exports = {
     let limit = req.query.limit || req.params.limit;
     let skip = req.query.skip || 0;
     if (date && limit) {
-      Document.find({
-        createdAt: date
-      })
-      .limit(parseInt(limit, 10))
-      .exec((err, documents) => {
-        if (err) {
-          res.send(err);
+      rbac.can(req.decoded.title, 'docs:get:all', (err, can) => {
+        if (err || !can) {
+          rbac.can(req.decoded.title, 'docs:get', (err, can) => {
+            if (err || !can) {
+              // not allowed
+              res.json({ success: false, message: 'Not authorized', err: err });
+            } else {
+              Document.find({
+                createdAt: date
+              })
+              .limit(parseInt(limit, 10))
+              .find({ $or: [{ ownerId: req.decoded._id }, { view: 'public' }]
+            })
+            .exec((err, documents) => {
+              if (err) {
+                res.send(err);
+              }
+              res.json({
+                success: true, documents: documents
+              });
+            });
+            }
+          });
+        } else {
+          Document.find({
+            createdAt: date
+          })
+          .limit(parseInt(limit, 10))
+          .exec((err, documents) => {
+            if (err) {
+              res.send(err);
+            }
+            res.json({
+              success: true, documents: documents
+            });
+          });
         }
-        res.json(documents);
       });
     } else if (limit) {
       limit = parseInt(limit, 10);
       skip = parseInt(skip, 10);
-      Document.find().sort({ createdAt: -1 })
-        .limit(limit)
-        .skip(skip)
-        .find({ $or: [{ ownerId: req.decoded._id }, { view: 'public' }]
-      }, ((err, documents) => {
-        if (err) {
-          res.send(err);
+      rbac.can(req.decoded.title, 'docs:get:all', (err, can) => {
+        if (err || !can) {
+          rbac.can(req.decoded.title, 'docs:get', (err, can) => {
+            if (err || !can) {
+              res.json({
+                success: false,
+                message: 'Not authorized',
+                err: err
+              });
+            } else {
+              Document.find().sort({ createdAt: -1 })
+                .limit(limit)
+                .skip(skip)
+                .find({ $or: [{ ownerId: req.decoded._id }, { view: 'public' }]
+              }, ((err, documents) => {
+                if (err) {
+                  res.send(err);
+                }
+                res.json({ success: true, documents: documents });
+              }));
+            }
+          });
+        } else {
+          Document.find().sort({ createdAt: -1 })
+            .limit(limit)
+            .skip(skip)
+            .exec((err, documents) => {
+              if (err) {
+                res.send(err);
+              }
+              res.json({ success: true, documents: documents });
+            });
         }
-        res.json(documents);
-      }));
+      });
     } else {
-      Document.find().sort({ createdAt: -1 }).find({
-        $or: [{ ownerId: req.decoded._id }, { view: 'public' }]
-      }, ((err, documents) => {
-        if (err) {
-          res.send(err);
+      rbac.can(req.decoded.title, 'docs:get:all', (err, can) => {
+        if (err || !can) {
+          rbac.can(req.decoded.title, 'docs:get', (err, can) => {
+            if (err || !can) {
+              res.json({
+                success: false,
+                message: 'Not authorized',
+                err: err
+              });
+            } else {
+              Document.find().sort({ createdAt: -1 }).find({
+                $or: [{ ownerId: req.decoded._id }, { view: 'public' }]
+              }, ((err, documents) => {
+                if (err) {
+                  res.send(err);
+                }
+                res.json({ success: true, documents: documents });
+              }));
+            }
+          });
+        } else {
+          Document.find().sort({ createdAt: -1 })
+          .exec((err, documents) => {
+            if (err) {
+              res.send(err);
+            }
+            res.json({ success: true, documents: documents });
+          });
         }
-        console.log(req);
-        res.json(documents);
-      }));
+      });
     }
   }),
 
 
   findDocument: ((req, res) => {
-    Document.findById(req.params.document_id, ((err, document) => {
+    Document.findById(req.params.document_id, (err, document) => {
       if (err) {
         return res.send(err);
       }
       return res.json(document);
-    }));
+    });
   }),
 
   updateDocument: ((req, res) => {
@@ -120,10 +195,11 @@ module.exports = {
     }, (err) => {
       if (err) {
         res.send(err);
+      } else {
+        res.json({
+          message: 'successfully deleted the document'
+        });
       }
-      res.json({
-        message: 'successfully deleted the document'
-      });
     });
   })
 
