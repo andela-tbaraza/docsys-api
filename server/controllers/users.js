@@ -28,7 +28,9 @@ module.exports = {
         if (err.code === 11000) {
           return res.status(409).json({ success: false, message: 'That username already exists' });
         }
-        return res.send(err);
+        res.status(400).send({
+          message: err
+        });
       }
       // if no error encountered return created user
       return res.json({ success: true, message: 'user created', user: user });
@@ -44,7 +46,9 @@ module.exports = {
           } else {
             User.findById(req.decoded._id, ((err, user) => {
               if (err) {
-                return res.send(err);
+                res.status(400).send({
+                  message: err
+                });
               }
               return res.json({
                 success: true,
@@ -56,10 +60,11 @@ module.exports = {
       } else {
         User.find((err, users) => {
           if (err) {
-            return res.send(err);
+            res.status(400).send({
+              message: err
+            });
           }
-          return res.json({
-            success: true,
+          return res.status(200).json({
             users: users
           });
         });
@@ -70,31 +75,42 @@ module.exports = {
   findUser: ((req, res) => {
     User.findById(req.params.user_id, ((err, user) => {
       if (err) {
-        return res.send(err);
+        return res.status(404).json({
+          message: 'user not found'
+        });
       }
-      return res.json(user);
+      return res.status(200).json({
+        user: user
+      });
     }));
   }),
 
   updateUser: ((req, res) => {
     User.findByIdAndUpdate(req.params.user_id, { $set: {
       // name: { firstname: req.body.firstname, lastname: req.body.lastname },
-      username: req.body.username
-      // email: req.body.email,
+      // username: req.body.username
+      email: req.body.email
       // password: req.body.password
     }
     }, { new: true }, ((err, user) => {
       if (err) {
-        res.send(err);
+        res.status(400).send({
+          message: err
+        });
       }
 
       // save the user
       user.save((err) => {
         if (err) {
-          return res.send(err);
+          res.status(400).send({
+            message: err
+          });
         }
         // return message
-        return res.json({ success: true, message: 'user updated', user: user });
+        return res.status(200).json({
+          message: 'user updated',
+          user: user
+        });
       });
     }));
   }),
@@ -104,10 +120,14 @@ module.exports = {
       _id: req.params.user_id
     }, (err) => {
       if (err) {
-        return res.send(err);
+        res.status(400).send({
+          message: err
+        });
       }
       // else return a message
-      return res.json({ message: 'successfully deleted the user' });
+      return res.status(200).json({
+        message: 'successfully deleted the user'
+      });
     });
   }),
 
@@ -116,9 +136,13 @@ module.exports = {
       ownerId: req.params.id
     }, ((err, documents) => {
       if (err) {
-        res.send(err);
+        res.status(400).send({
+          message: err
+        });
       }
-      res.json(documents);
+      res.status(200).json({
+        documents: documents
+      });
     }));
   })
 

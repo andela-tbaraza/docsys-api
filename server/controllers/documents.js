@@ -11,7 +11,9 @@ module.exports = {
       title: req.decoded.title
     }).select('_id').exec((err, id) => {
       if (err) {
-        throw err;
+        res.status(400).send({
+          message: err
+        });
       } else {
         const document = new Document(); // creating an instance of Document model
         // values to be added to new instance
@@ -31,7 +33,9 @@ module.exports = {
                 message: 'that title already exists'
               });
             } else {
-              res.send(error);
+              res.status(400).send({
+                message: err
+              });
             }
           } else {
             res.status(200).json({
@@ -48,6 +52,8 @@ module.exports = {
     const date = req.query.date;
     let limit = req.query.limit || req.params.limit;
     let skip = req.query.skip || 0;
+    let page = req.query.page || 1;
+
     if (date && limit) {
       rbac.can(req.decoded.title, 'docs:get:all', (err, can) => {
         if (err || !can) {
@@ -59,15 +65,19 @@ module.exports = {
                 err: err
               });
             } else {
+              limit = parseInt(limit, 10);
+              console.log('8**************',limit);
               Document.find({
                 createdAt: date
               })
-              .limit(parseInt(limit, 10))
+              .limit(limit)
               .find({ $or: [{ ownerId: req.decoded._id }, { view: 'public' }]
             })
             .exec((err, documents) => {
               if (err) {
-                res.send(err);
+                res.status(400).send({
+                  message: err
+                });
               }
               res.status(200).json({
                 documents: documents
@@ -82,7 +92,9 @@ module.exports = {
           .limit(parseInt(limit, 10))
           .exec((err, documents) => {
             if (err) {
-              res.send(err);
+              res.status(400).send({
+                message: err
+              });
             }
             res.status(200).json({
               documents: documents
@@ -90,9 +102,10 @@ module.exports = {
           });
         }
       });
-    } else if (limit) {
+    } else if (limit && page) {
       limit = parseInt(limit, 10);
-      skip = parseInt(skip, 10);
+      skip = (page - 1) * limit;
+      page = parseInt(page, 10);
       rbac.can(req.decoded.title, 'docs:get:all', (err, can) => {
         if (err || !can) {
           rbac.can(req.decoded.title, 'docs:get', (err, can) => {
@@ -103,12 +116,14 @@ module.exports = {
               });
             } else {
               Document.find().sort({ createdAt: -1 })
-                .limit(limit)
                 .skip(skip)
+                .limit(limit)
                 .find({ $or: [{ ownerId: req.decoded._id }, { view: 'public' }]
               }, ((err, documents) => {
                 if (err) {
-                  res.send(err);
+                  res.status(400).send({
+                    message: err
+                  });
                 }
                 res.status(200).json({
                   documents: documents
@@ -122,7 +137,9 @@ module.exports = {
             .skip(skip)
             .exec((err, documents) => {
               if (err) {
-                res.send(err);
+                res.status(400).send({
+                  message: err
+                });
               }
               res.status(200).json({
                 documents: documents
@@ -144,7 +161,9 @@ module.exports = {
                 $or: [{ ownerId: req.decoded._id }, { view: 'public' }]
               }, ((err, documents) => {
                 if (err) {
-                  res.send(err);
+                  res.status(400).send({
+                    message: err
+                  });
                 }
                 res.status(200).json({ documents: documents });
               }));
@@ -154,7 +173,9 @@ module.exports = {
           Document.find().sort({ createdAt: -1 })
           .exec((err, documents) => {
             if (err) {
-              res.send(err);
+              res.status(400).send({
+                message: err
+              });
             }
             res.status(200).json({ documents: documents });
           });
@@ -167,7 +188,9 @@ module.exports = {
   findDocument: ((req, res) => {
     Document.findById(req.params.document_id, (err, document) => {
       if (err) {
-        return res.send(err);
+        res.status(400).send({
+          message: err
+        });
       }
       return res.status(200).json({
         document: document
@@ -181,13 +204,17 @@ module.exports = {
       content: req.body.content }
     }, { new: true }, ((err, document) => {
       if (err) {
-        res.send(err);
+        res.status(400).send({
+          message: err
+        });
       }
 
       // save the document
       document.save((error) => {
         if (error) {
-          res.send(error);
+          res.status(400).send({
+            message: err
+          });
         }
         res.status(200).json({
           message: 'successfully updated document',
@@ -202,7 +229,9 @@ module.exports = {
       _id: req.params.document_id
     }, (err) => {
       if (err) {
-        res.send(err);
+        res.status(400).send({
+          message: err
+        });
       } else {
         res.status(200).json({
           message: 'successfully deleted the document'

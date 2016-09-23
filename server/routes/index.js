@@ -8,7 +8,7 @@ const roles = require('./roles/roleRoutes');
 module.exports = (router) => {
   // test route to make sure everything is working
   router.get('/', ((req, res) => {
-    res.json({
+    res.status(200).json({
       message: 'yaaay! you will like it here'
     });
   }));

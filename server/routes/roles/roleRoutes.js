@@ -1,13 +1,10 @@
 const controller = require('../../controllers/roles');
-const daemon = require('../../middlewares');
+const access = require('../../middlewares');
 
 module.exports = (router) => {
-    // POST /roles
-  router.post('/roles', controller.create);
-
-    // GET /roles
-  router.get('/roles', controller.findRole);
-
-  // DELETE /roles
-  router.delete('/roles/:role_id', controller.deleteRole);
+  router.post('/roles', access.roleAccess(), controller.create);
+  router.get('/roles', access.roleAccess(), controller.findRoles);
+  router.get('/roles/:role_id', access.roleAccess(), controller.findRole);
+  // router.put('/roles/:role_id', access.roleAccess(), controller.updateRole);
+  router.delete('/roles/:role_id', access.roleAccess(), controller.deleteRole);
 };

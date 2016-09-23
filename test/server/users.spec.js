@@ -3,6 +3,7 @@ const seed = require('../seeder/seed.js');
 const server = require('../../server.js');
 const request = require('supertest');
 const should = require('should');
+
 let token;
 
 // var server = supertest.agent('http://localhost:8080');
@@ -102,8 +103,164 @@ describe('User', () => {
           res.send(err);
           done();
         }
-        res.body.success.should.equal(true);
+        res.status.should.equal(200);
         done();
       });
+  });
+//  it('should validate that a response of 404
+// is rerurned when getting details of a user that\'s not registered', (done) => {
+//     request(server)
+//     .get('/api/users/57e2d4b0cbc141731713651a')
+//     .set('x-access-token', token)
+//     .end((err, res) => {
+//       console.log(err);
+//       res.status.should.equal(404);
+//       done();
+//     });
+//   });
+});
+
+describe('User Details Access', () => {
+  before((done) => {
+    request(server)
+    .post('/api/login')
+    .send({
+      username: 'alex',
+      password: '*dinNNerQ'
+    })
+    .end((err, res) => {
+      token = res.body.token;
+      done();
+    });
+  });
+
+  it('should validate that a user can get their details', (done) => {
+    request(server)
+    .get('/api/users/57e2d4b0cbc141731717651b')
+    .set('x-access-token', token)
+    .end((err, res) => {
+      res.status.should.equal(200);
+      done();
+    });
+  });
+
+  it('should validate that a user can edit their details', (done) => {
+    request(server)
+    .put('/api/users/57e2d4b0cbc141731717651b')
+    .set('x-access-token', token)
+    .send({
+      email: 'alex@gmail.com'
+    })
+    .end((err, res) => {
+      res.status.should.equal(200);
+      done();
+    });
+  });
+
+  it('should validate that a user cannot get the details of other users', (done) => {
+    request(server)
+    .get('/api/users/57e2d4b0cbc141731717651a')
+    .set('x-access-token', token)
+    .end((err, res) => {
+      res.status.should.equal(401);
+      done();
+    });
+  });
+
+  it('should validate that a user cannot delete the details of another user', (done) => {
+    request(server)
+    .delete('/api/users/57e2d4b0cbc141731717651a')
+    .set('x-access-token', token)
+    .end((err, res) => {
+      res.status.should.equal(401);
+      done();
+    });
+  });
+
+  it('should validate that a user can delete their details', (done) => {
+    request(server)
+    .delete('/api/users/57e2d4b0cbc141731717651b')
+    .set('x-access-token', token)
+    .end((err, res) => {
+      res.status.should.equal(200);
+      done();
+    });
+  });
+
+  it('should validate that a user can get all documents he/she has created', (done) => {
+    request(server)
+    .get('/api/users/57e2d4b0cbc141731717651b/documents')
+    .set('x-access-token', token)
+    .end((err, res) => {
+      res.status.should.equal(200);
+      done();
+    });
+  });
+
+  it('should validate that a user cannot get the details of all users just theirs', (done) => {
+    request(server)
+    .get('/api/users')
+    .set('x-access-token', token)
+    .end((err, res) => {
+      res.status.should.equal(200);
+      done();
+    });
+  });
+
+  it('should return a 403 response if an incorrect or expired token is passed', (done) => {
+    token = token + 'you'
+    request(server)
+    .get('/api/documents')
+    .set('x-access-token', token)
+    .end((err, res) => {
+      res.status.should.equal(403);
+      res.body.message.should.equal('failed to authenticate token');
+      done();
+    });
+  });
+});
+describe(' User Authentication', () => {
+  it('should validate that a user can access the home route', (done) => {
+    request(server)
+    .get('/api/')
+    .end((err, res) => {
+      res.status.should.equal(200);
+      done();
+    });
+  });
+
+  it('should validate that a 404 response status is returned when login a user that\'s not registered', (done) => {
+    request(server)
+    .post('/api/login')
+    .send({
+      username: 'monicah',
+      password: 'she knows'
+    })
+    .end((err, res) => {
+      res.status.should.equal(404);
+      done();
+    });
+  });
+
+  it('should validate that a 401 response status is returned when a user logins in with wrong password', (done) => {
+    request(server)
+    .post('/api/login')
+    .send({
+      username: 'rael',
+      password: 'wrong'
+    })
+    .end((err, res) => {
+      res.status.should.equal(401);
+      done();
+    });
+  });
+
+  it('should validate that a 403 response status when a user is accesing protected routes without authentication', (done) => {
+    request(server)
+    .get('/api/documents')
+    .end((err, res) => {
+      res.status.should.equal(403);
+      done();
+    });
   });
 });
