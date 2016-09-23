@@ -9,21 +9,21 @@ module.exports = {
       username: req.body.username
     }).select('email username password title').exec((err, user) => {
       if (err) {
-        throw err;
+        res.status(400).send({
+          message: err
+        });
       }
 
       // if the user with that username is not found
       if (!user) {
-        res.json({
-          success: false,
+        res.status(404).json({
           message: 'Authentication failed. User not found'
         });
       } else if (user) {
         // compare the password to see if they match
         const validPassword = user.comparePassword(req.body.password);
         if (!validPassword) {
-          res.json({
-            success: false,
+          res.status(401).json({
             message: 'Authentication failed. Wrong password'
           });
         } else {
@@ -32,8 +32,7 @@ module.exports = {
             username: user.username,
             email: user.email,
             _id: user._id,
-            title: user.title,
-            ownerId: user._id
+            title: user.title
             // viewId: user.viewId
           }, process.env.SECRET_KEY, {
             expiresIn: '24h' // token expires in 24 hrs
@@ -41,8 +40,7 @@ module.exports = {
 
           // return this data including the token
           res.json({
-            success: true,
-            message: 'here is your token',
+            message: 'your token expires in 24 hours',
             token: token
           });
         }

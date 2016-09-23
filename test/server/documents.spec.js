@@ -35,8 +35,23 @@ describe('Document', () => {
           done();
         }
         res.body.document.should.have.property('createdAt');
+        res.status.should.equal(201);
         done();
       });
+  });
+
+  it('should validate that a user can specify the view permissions of a document', () => {
+    request(server)
+    .post('/api/documents')
+    .set('x-access-token', token)
+    .send({
+      title: 'Cyber security',
+      content: 'This is a very serious topic',
+      view: 'public'
+    })
+    .end((err, res) => {
+      res.status.should.equal(201);
+    });
   });
 
   it('validates that all documents are returned, limited by a specified number', (done) => {
@@ -91,7 +106,7 @@ describe('Document', () => {
     .set('x-access-token', token)
     .end((err, res) => {
       res.status.should.equal(200);
-      res.body.documents.length.should.equal(14);
+      res.body.documents.length.should.equal(15);
       done();
     });
   });
@@ -111,13 +126,14 @@ describe('Document access', () => {
       done();
     });
   });
+
   it('should validate that a user view their documents and only public documents of other users', (done) => {
     request(server)
     .get('/api/documents')
     .set('x-access-token', token)
     .end((err, res) => {
       res.status.should.equal(200);
-      res.body.documents.length.should.equal(8);
+      res.body.documents.length.should.equal(9);
       done();
     });
   });
@@ -156,6 +172,28 @@ describe('Document access', () => {
     });
   });
 
+  it('should validate that a user can get all documents created on a specified date limited by a specified number', (done) => {
+    request(server)
+    .get('/api/documents?date=2016-09-16T12:20:06.877Z&limit=2')
+    .set('x-access-token', token)
+    .end((err, res) => {
+      res.status.should.equal(200);
+      res.body.documents.length.should.equal(2);
+      done();
+    });
+  });
+
+  it('should validate that a user can get documents in chunks', (done) => {
+    request(server)
+    .get('/api/documents?page=2&limit=2')
+    .set('x-access-token', token)
+    .end((err, res) => {
+      res.status.should.equal(200);
+      res.body.documents.length.should.equal(2);
+      done();
+    });
+  });
+
   it('should validate that a user can delete their own document', (done) => {
     request(server)
     .delete('/api/documents/57e3f5260749b7a707b5e367')
@@ -189,7 +227,6 @@ describe('Document access', () => {
     .get('/api/documents/57ddc4a5873c5ec457e1c20a')
     .set('x-access-token', token)
     .end((err, res) => {
-      console.log(res.body);
       res.status.should.equal(200);
       // res.body.document.should.equal();
       done();

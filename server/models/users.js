@@ -42,31 +42,6 @@ const UserSchema = new mongoose.Schema({
   }
 });
 
-// UserSchema.plugin(require('mongoose-role'), {
-//   roles: ['public', 'user', 'admin'],
-//   accessLevels: {
-//     'public': ['public', 'user', 'admin'],
-//     'anon': ['public'],
-//     'user': ['user', 'admin'],
-//     'admin': ['admin']
-//   }
-// });
-
-
-// var User = mongoose.model('User', UserSchema);
-//
-// var newUser = new User({email: 'email@email.com', role: 'user'});
-//
-// // The string passed in is an access level
-// console.log(newUser.role);
-// console.log(newUser.hasAccess('public')); // true
-// console.log(newUser.hasAccess('anon')); // false
-// console.log(newUser.hasAccess('user')); // true
-// console.log(newUser.hasAccess('admin')); // false
-// console.log(newUser.hasAccess([ 'public', 'user' ])); // true
-// console.log(newUser.hasAccess([ 'public', 'anon' ])); // false (because the user isn't a part of 'anon' access level)
-//
-
 // hash the password before the user is saved
 UserSchema.pre('save', function(next) {
   let user = this;
