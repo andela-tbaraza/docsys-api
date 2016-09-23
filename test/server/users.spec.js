@@ -39,11 +39,10 @@ describe('User', () => {
         password: 'admin'
       })
       .expect('Content-Type', /json/)
-      .expect(200)
       .end((err, res) => {
         res.body.message.should.equal('That username already exists');
         res.body.success.should.equal(false);
-        res.status.should.equal(200);
+        res.status.should.equal(409);
         done();
       });
   });
@@ -64,7 +63,6 @@ describe('User', () => {
           res.send(err);
           done();
         }
-        // console.log(res.body);
         res.body.message.should.equal('user created');
         res.body.success.should.equal(true);
         res.body.user.should.have.property('title');
@@ -84,9 +82,7 @@ describe('User', () => {
         password: 'MK4'
       })
       .expect('Content-Type', /json/)
-      .expect(200)
       .end((err, res) => {
-        // console.log(res.body)
         res.body.message.should.equal('user created');
         res.body.success.should.equal(true);
         res.body.user.name.should.have.keys('firstname', 'lastname');
@@ -106,9 +102,7 @@ describe('User', () => {
           res.send(err);
           done();
         }
-        // console.log(res.body);
         res.body.success.should.equal(true);
-        // res.body.uses.should.equal();
         done();
       });
   });

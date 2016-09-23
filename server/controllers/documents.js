@@ -27,12 +27,14 @@ module.exports = {
         document.save((error) => {
           if (error) {
             if (error.code === 11000) {
-              res.json({ success: false, message: 'that title already exists' });
+              res.status(409).json({
+                message: 'that title already exists'
+              });
             } else {
               res.send(error);
             }
           } else {
-            res.json({
+            res.status(200).json({
               message: 'document created',
               document: document
             });
@@ -52,7 +54,10 @@ module.exports = {
           rbac.can(req.decoded.title, 'docs:get', (err, can) => {
             if (err || !can) {
               // not allowed
-              res.json({ success: false, message: 'Not authorized', err: err });
+              res.status(401).json({
+                message: 'Not authorized',
+                err: err
+              });
             } else {
               Document.find({
                 createdAt: date
@@ -64,8 +69,8 @@ module.exports = {
               if (err) {
                 res.send(err);
               }
-              res.json({
-                success: true, documents: documents
+              res.status(200).json({
+                documents: documents
               });
             });
             }
@@ -79,8 +84,8 @@ module.exports = {
             if (err) {
               res.send(err);
             }
-            res.json({
-              success: true, documents: documents
+            res.status(200).json({
+              documents: documents
             });
           });
         }
@@ -92,8 +97,7 @@ module.exports = {
         if (err || !can) {
           rbac.can(req.decoded.title, 'docs:get', (err, can) => {
             if (err || !can) {
-              res.json({
-                success: false,
+              res.status(401).json({
                 message: 'Not authorized',
                 err: err
               });
@@ -106,7 +110,9 @@ module.exports = {
                 if (err) {
                   res.send(err);
                 }
-                res.json({ success: true, documents: documents });
+                res.status(200).json({
+                  documents: documents
+                });
               }));
             }
           });
@@ -118,7 +124,9 @@ module.exports = {
               if (err) {
                 res.send(err);
               }
-              res.json({ success: true, documents: documents });
+              res.status(200).json({
+                documents: documents
+              });
             });
         }
       });
@@ -127,8 +135,7 @@ module.exports = {
         if (err || !can) {
           rbac.can(req.decoded.title, 'docs:get', (err, can) => {
             if (err || !can) {
-              res.json({
-                success: false,
+              res.status(401).json({
                 message: 'Not authorized',
                 err: err
               });
@@ -139,7 +146,7 @@ module.exports = {
                 if (err) {
                   res.send(err);
                 }
-                res.json({ success: true, documents: documents });
+                res.status(200).json({ documents: documents });
               }));
             }
           });
@@ -149,7 +156,7 @@ module.exports = {
             if (err) {
               res.send(err);
             }
-            res.json({ success: true, documents: documents });
+            res.status(200).json({ documents: documents });
           });
         }
       });
@@ -162,7 +169,9 @@ module.exports = {
       if (err) {
         return res.send(err);
       }
-      return res.json(document);
+      return res.status(200).json({
+        document: document
+      });
     });
   }),
 
@@ -180,9 +189,8 @@ module.exports = {
         if (error) {
           res.send(error);
         }
-        res.json({
-          success: true,
-          message: 'document updated',
+        res.status(200).json({
+          message: 'successfully updated document',
           document: document
         });
       });
@@ -196,7 +204,7 @@ module.exports = {
       if (err) {
         res.send(err);
       } else {
-        res.json({
+        res.status(200).json({
           message: 'successfully deleted the document'
         });
       }

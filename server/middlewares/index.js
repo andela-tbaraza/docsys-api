@@ -6,12 +6,12 @@ const opts = {
     can: ['doc:create', 'docs:get', 'user:create', 'user:get', {
       name: 'doc:delete&update',
       when: (params, callback) => {
-        setImmediate(params.userId === params.ownerId);
+        setImmediate(callback, null, params.userId.toString() === params.ownerId.toString());
       }
     }, {
       name: 'user:delete&update',
       when: (params, callback) => {
-        setImmediate(params.userId === params.id);
+        setImmediate(callback, null, params.userId === params.id);
       }
     }
   ] },
@@ -25,12 +25,12 @@ const rbac = new RBAC(opts);
 module.exports = {
   rbac: rbac,
 
-  userAccess: (user_id) => {
+  userAccess: (userId) => {
     return ((req, res, next) => {
-      req.params.userId = user_id;
+      req.params.userId = userId;
       rbac.can(req.decoded.title, 'user:deleted&update:any', ((err, can) => {
         if (err || !can) {
-          rbac.can(req.decoded.title, 'user:delete&update', { userId: req.decoded._id, id: user_id }, ((err, can) => {
+          rbac.can(req.decoded.title, 'user:delete&update', { userId: req.decoded._id, id: userId }, ((err, can) => {
             if (err || !can) {
               res.json({ success: false, message: 'Not authorized', err: err });
             } else {
@@ -44,32 +44,31 @@ module.exports = {
     });
   },
 
+
+
+
   docAccess: (docId) => {
-    return (req, res, next) => {
-      req.params.document_id = docId;
-      Document.findById(docId).select('ownerId').exec((err, id) => {
+    return ((req, res, next) => {
+      docId = req.params.document_id;
+      Document.findById(docId).select('ownerId').exec((err, idObject) => {
         if (err) {
           throw err;
         } else {
-          const idObject = id
-          rbac.can(req.decoded.title, 'doc:delete&update:any', ((err, can) => {
+          rbac.can(req.decoded.title, 'doc:delete&update:any', (err, can) => {
             if (err || !can) {
-              // we are not allowed
               rbac.can(req.decoded.title, 'doc:delete&update', { userId: req.decoded._id, ownerId: idObject.ownerId }, (err, can) => {
                 if (err || !can) {
-                  res.json({ success: false, message: 'Not authorized', err: err })
+                  res.status(401).json({ message: 'Not authorized', err: err });
                 } else {
-                  // we are allowed
                   return next();
                 }
               });
             } else {
-                // we are allowed
-              return next();
+              next();
             }
-          }));
+          });
         }
       });
-    };
+    });
   }
 };

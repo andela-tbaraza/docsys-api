@@ -26,7 +26,7 @@ module.exports = {
       if (err) {
         // duplicate entry
         if (err.code === 11000) {
-          return res.json({ success: false, message: 'That username already exists' });
+          return res.status(409).json({ success: false, message: 'That username already exists' });
         }
         return res.send(err);
       }
@@ -40,7 +40,7 @@ module.exports = {
       if (err || !can) {
         rbac.can(req.decoded.title, 'user:get', ((err, can) => {
           if (err || !can) {
-            res.json({ success: false, message: 'Not authorized', err: err });
+            res.status(401).json({ success: false, message: 'Not authorized', err: err });
           } else {
             User.findById(req.decoded._id, ((err, user) => {
               if (err) {
@@ -50,9 +50,9 @@ module.exports = {
                 success: true,
                 user: user
               });
-            }))
+            }));
           }
-        }))
+        }));
       } else {
         User.find((err, users) => {
           if (err) {
@@ -89,7 +89,7 @@ module.exports = {
       }
 
       // save the user
-      user.save((error) => {
+      user.save((err) => {
         if (err) {
           return res.send(err);
         }

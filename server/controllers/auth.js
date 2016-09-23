@@ -32,7 +32,8 @@ module.exports = {
             username: user.username,
             email: user.email,
             _id: user._id,
-            title: user.title
+            title: user.title,
+            ownerId: user._id
             // viewId: user.viewId
           }, process.env.SECRET_KEY, {
             expiresIn: '24h' // token expires in 24 hrs
