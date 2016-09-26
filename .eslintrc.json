@@ -1,0 +1,71 @@
+{
+    "env": {
+        "es6": true,
+        "node": true
+    },
+    "extends": "airbnb/base",
+    "parserOptions": {
+        "sourceType": "module"
+    },
+    "rules": {
+        "indent": [
+            "error",
+            2
+        ],
+        "linebreak-style": [
+            "error",
+            "unix"
+        ],
+        "quotes": [
+            "error",
+            "single"
+        ],
+        "semi": [
+            "error",
+            "always"
+        ],
+        "comma-dangle": [
+           "error",
+            "never"
+        ],
+        "no-underscore-dangle": [
+          "error",
+          { "allow": [
+            "_id",
+            "_this"]
+            }],
+        "no-param-reassign": [
+          "error",
+          {
+            "props": false
+          }
+        ],
+        "object-shorthand": [
+          "error",
+          "methods"
+        ],
+        "import/no-extraneous-dependencies": [
+          "error",
+          {
+            "devDependencies": true,
+            "optionalDependencies": false,
+            "peerDependencies": false
+            }
+          ],
+          "no-shadow": ["error",
+            {
+               "allow": ["done", "err", "rbac", "can"]
+            }
+          ],
+          "no-unused-vars": ["error",
+            {
+              "varsIgnorePattern": "should"
+            }
+          ],
+          "func-names": [
+            "error",
+            "never"
+          ],
+          "arrow-body-style": ["error", "always"]
+    }
+}
