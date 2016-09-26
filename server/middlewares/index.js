@@ -1,3 +1,5 @@
+/* eslint-disable consistent-return*/
+
 const Document = require('../models/documents');
 const RBAC = require('easy-rbac');
 
@@ -25,9 +27,9 @@ const rbac = new RBAC(opts);
 module.exports = {
   rbac: rbac,
 
-  userAccess: (userId) => {
+  userAccess: () => {
     return ((req, res, next) => {
-      userId = req.params.user_id || req.params.id;
+      const userId = req.params.user_id || req.params.id;
       rbac.can(req.decoded.title, 'user:deleted&update:any', ((err, can) => {
         if (err || !can) {
           rbac.can(req.decoded.title, 'user:delete&update', { userId: req.decoded._id, id: userId }, ((err, can) => {
@@ -44,9 +46,9 @@ module.exports = {
     });
   },
 
-  docAccess: (docId) => {
+  docAccess: () => {
     return ((req, res, next) => {
-      docId = req.params.document_id;
+      const docId = req.params.document_id;
       Document.findById(docId).select('ownerId').exec((err, idObject) => {
         if (err) {
           res.status(400).send({

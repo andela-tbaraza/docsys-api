@@ -1,34 +1,30 @@
 /* eslint-disable no-console */
+
+const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const morgan = require('morgan');
+const dotenv = require('dotenv');
+
 if (!process.env.DATABASE_URL_TEST) {
-  require('dotenv').load();
+  dotenv.load();
 }
 
-const express = require('express'),
-      mongoose = require('mongoose'),
-      bodyParser = require('body-parser'),
-      morgan = require('morgan');
-
 const app = express(); // define our app using express
-
-
-// connect to MongoDB
-// const databaseUri = process.env.NODE_ENV === 'test' ?
-// process.env.DATABASE_URL_TEST :
-// process.env.DATABASE_URL;
 
 if (process.env.NODE_ENV !== 'test') {
   mongoose.Promise = global.Promise;
   mongoose.connect(process.env.DATABASE_URL)
-  .then(() =>  console.log('Connection succesful'))
-  .catch((err) => console.error(err));
+  .then(() => console.log('Connection succesful'))
+  .catch((err) => {
+    console.error(err);
+  });
 }
 
 app.use(morgan('dev'));
 
-
-
 // Enable CORS from client-side
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Access-Control-Allow-Credentials');

@@ -1,15 +1,11 @@
 /* eslint-disable no-undef*/
+
 const seed = require('../seeder/seed.js');
 const server = require('../../server.js');
 const request = require('supertest');
 const should = require('should');
 
 let token;
-
-// var server = supertest.agent('http://localhost:8080');
-
-// const users = require('../../server/models/users');
-// chai.use(request);
 
 before((done) => {
   const cb = () => {
@@ -123,17 +119,6 @@ describe('User', () => {
         done();
       });
   });
-//  it('should validate that a response of 404
-// is rerurned when getting details of a user that\'s not registered', (done) => {
-//     request(server)
-//     .get('/api/users/57e2d4b0cbc141731713651a')
-//     .set('x-access-token', token)
-//     .end((err, res) => {
-//       console.log(err);
-//       res.status.should.equal(404);
-//       done();
-//     });
-//   });
 });
 
 describe('User Details Access', () => {
@@ -224,7 +209,7 @@ describe('User Details Access', () => {
   });
 
   it('should return a 403 response if an incorrect or expired token is passed', (done) => {
-    token = token + 'you'
+    token += 'you';
     request(server)
     .get('/api/documents')
     .set('x-access-token', token)

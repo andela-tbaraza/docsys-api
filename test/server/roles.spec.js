@@ -94,19 +94,6 @@ describe('Role', () => {
     });
   });
 
-  // it('should validate that an admin can update a role', (done) => {
-  //   request(server)
-  //   .put('/api/roles/57e3a3a0198c7df30279ca5d')
-  //   .set('x-access-token', token)
-  //   .send({
-  //     title: 'SuperUser'
-  //   })
-  //   .end((err, res) => {
-  //     res.status.should.equal(200);
-  //     done();
-  //   });
-  // });
-
   it('should validate that an admin can delete a role', (done) => {
     request(server)
     .delete('/api/roles/57e3a3a0198c7df30279ca5d')
@@ -116,23 +103,6 @@ describe('Role', () => {
       done();
     });
   });
-
-//   it('should validate that a 400 status response is returned when getting a role that is not registered', (done) => {
-//     request(server)
-//     .get('/api/roles/57e3a3a0198c7dr30279ca5c')
-//     .set('x-access-token', token)
-//     .end((err, res) => {
-//       // if (err) {
-//       //   res.send(err);
-//       //   done();
-//       // }
-//       console.log(res.body);
-//       console.log(res.status);
-//       // res.status.should.equal(400);
-//       // res.body.roles.length.should.equal(1);
-//       done();
-//     });
-//   });
 });
 
 describe('Role access', () => {

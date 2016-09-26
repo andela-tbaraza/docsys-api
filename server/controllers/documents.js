@@ -66,7 +66,6 @@ module.exports = {
               });
             } else {
               limit = parseInt(limit, 10);
-              console.log('8**************',limit);
               Document.find({
                 createdAt: date
               })

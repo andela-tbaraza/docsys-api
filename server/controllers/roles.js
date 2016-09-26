@@ -1,3 +1,5 @@
+/* eslint-disable consistent-return*/
+
 const Role = require('../models/roles.js');
 
 module.exports = {

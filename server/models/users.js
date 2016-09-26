@@ -1,3 +1,5 @@
+/* eslint-disable consistent-return*/
+
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt-nodejs');
 
@@ -43,8 +45,8 @@ const UserSchema = new mongoose.Schema({
 });
 
 // hash the password before the user is saved
-UserSchema.pre('save', function(next) {
-  let user = this;
+UserSchema.pre('save', function (next) {
+  const user = this;
 
   // hash the password only if it's new or modified
   if (!user.isModified('password') || !user.isNew) {
@@ -52,23 +54,21 @@ UserSchema.pre('save', function(next) {
   }
 
   // else generate the hash
-  bcrypt.hash(user.password, null, null, function(err, hash) {
+  bcrypt.hash(user.password, null, null, (err, hash) => {
     if (err) {
       return next(err);
     }
 
-    //the user password is the hashed one
+    // the user password is the hashed one
     user.password = hash;
     next();
   });
 });
 
 // method to compare a given password with the database hash
-UserSchema.methods.comparePassword = function(password) {
-  let user = this;
+UserSchema.methods.comparePassword = function (password) {
+  const user = this;
   return bcrypt.compareSync(password, user.password);
 };
-
-
 
 module.exports = mongoose.model('User', UserSchema);

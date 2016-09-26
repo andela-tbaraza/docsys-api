@@ -1,4 +1,6 @@
 /* eslint-disable global-require*/
+/* eslint-disable consistent-return*/
+
 const jwt = require('jsonwebtoken');
 const config = require('../../config.js');
 const users = require('./users/userRoutes');
@@ -17,8 +19,6 @@ module.exports = (router) => {
 
   // middleware to use for all requests
   router.use((req, res, next) => {
-    // console.log(res);
-
     // check for the token in the header, post parameters or url parameters
     const token = req.headers['x-access-token'] || req.body.token || req.param.token;
 
@@ -28,15 +28,14 @@ module.exports = (router) => {
       jwt.verify(token, config.secret, (err, decoded) => {
         if (err) {
           return res.status(403).send({
-            success: false,
             message: 'failed to authenticate token'
           });
-        } else {
-          // save the token for use with the other requests
-          req.decoded = decoded;
-          // make sure we go to the next routes and don't stop here
-          next();
         }
+        // else save the token for use with the other requests
+        req.decoded = decoded;
+
+        // make sure we go to the next routes and don't stop here
+        return next();
       });
     } else {
       // if there is no token
