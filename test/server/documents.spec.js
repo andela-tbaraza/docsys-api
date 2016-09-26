@@ -4,8 +4,6 @@ const server = require('../../server.js');
 const request = require('supertest');
 const should = require('should');
 
-// const Role = require('../../server/models/roles.js');
-
 let token;
 
 describe('Document', () => {

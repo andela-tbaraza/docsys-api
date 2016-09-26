@@ -1,21 +1,23 @@
 /* eslint-disable no-console */
+/* eslint-disable global-require */
+/* eslint-disable new-cap */
 
+if (!process.env.DATABASE_URL_TEST) {
+  require('dotenv').load();
+}
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
-const dotenv = require('dotenv');
-
-if (!process.env.DATABASE_URL_TEST) {
-  dotenv.load();
-}
 
 const app = express(); // define our app using express
 
 if (process.env.NODE_ENV !== 'test') {
   mongoose.Promise = global.Promise;
   mongoose.connect(process.env.DATABASE_URL)
-  .then(() => console.log('Connection succesful'))
+  .then(() => {
+    console.log('Connection succesful');
+  })
   .catch((err) => {
     console.error(err);
   });

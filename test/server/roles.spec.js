@@ -111,6 +111,10 @@ describe('Role', () => {
     .delete('/api/roles/57e3a3a0198c7df30279ca5d')
     .set('x-access-token', token)
     .end((err, res) => {
+      if (err) {
+        res.send(err);
+        done();
+      }
       res.status.should.equal(200);
       done();
     });

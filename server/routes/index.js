@@ -21,14 +21,14 @@ module.exports = (router) => {
   router.use((req, res, next) => {
     // check for the token in the header, post parameters or url parameters
     const token = req.headers['x-access-token'] || req.body.token || req.param.token;
-
     // when token is found
     if (token) {
       // check expiration and verify the secret
       jwt.verify(token, config.secret, (err, decoded) => {
         if (err) {
           return res.status(403).send({
-            message: 'failed to authenticate token'
+            message: 'failed to authenticate token',
+            error: err
           });
         }
         // else save the token for use with the other requests
