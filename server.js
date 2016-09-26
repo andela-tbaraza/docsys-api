@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const dotenv = require('dotenv');
+const routes = require('./server/routes');
 
 if (!process.env.DATABASE_URL_TEST) {
   dotenv.load();
@@ -38,17 +39,8 @@ app.use(bodyParser.urlencoded({ extended: true })); // parse application/x-www-f
 app.use(bodyParser.json()); // parse application/json
 const port = process.env.PORT || 8080;        // set our port
 
-// ROUTES FOR OUR application
-// const router = express.Router(); // get an instance of the express Router
-const routes = require('./server/routes');
-
 // all our routes will be prefixed with api
 app.use('/api', routes(express.Router()));
-
-// Handle all routes
-// router(app);
-// app.use('/', router);
-// more routes later
 
 // Starting the server
 app.listen(port);
