@@ -14,6 +14,10 @@ describe('Role', () => {
         password: 'admin'
       })
       .end((err, res) => {
+        if (err) {
+          res.send(err);
+          done();
+        }
         token = res.body.token;
         done();
       });
@@ -76,6 +80,10 @@ describe('Role', () => {
       title: 'public'
     })
     .end((err, res) => {
+      if (err) {
+        res.send(err);
+        done();
+      }
       res.status.should.equal(201);
       done();
     });
@@ -89,6 +97,10 @@ describe('Role', () => {
       title: 'SuperAdmin'
     })
     .end((err, res) => {
+      if (err) {
+        res.send(err);
+        done();
+      }
       res.status.should.equal(400);
       done();
     });
@@ -114,6 +126,10 @@ describe('Role access', () => {
       password: '12RaeL34'
     })
     .end((err, res) => {
+      if (err) {
+        res.send(err);
+        done();
+      }
       token = res.body.token;
       done();
     });

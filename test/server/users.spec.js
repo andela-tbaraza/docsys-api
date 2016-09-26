@@ -16,6 +16,10 @@ before((done) => {
         password: 'admin'
       })
       .end((err, res) => {
+        if (err) {
+          res.send(err);
+          done();
+        }
         token = res.body.token;
         done();
       });
@@ -37,6 +41,10 @@ describe('User', () => {
       })
       .expect('Content-Type', /json/)
       .end((err, res) => {
+        if (err) {
+          res.send(err);
+          done();
+        }
         res.body.message.should.equal('That username already exists');
         res.status.should.equal(409);
         done();
@@ -78,6 +86,10 @@ describe('User', () => {
       })
       .expect('Content-Type', /json/)
       .end((err, res) => {
+        if (err) {
+          res.send(err);
+          done();
+        }
         res.body.message.should.equal('user created');
         res.body.user.name.should.have.keys('firstname', 'lastname');
         res.status.should.equal(201);
@@ -113,6 +125,10 @@ describe('User', () => {
       })
       .expect('Content-Type', /json/)
       .end((err, res) => {
+        if (err) {
+          res.send(err);
+          done();
+        }
         res.body.message.should.equal('user created');
         res.body.tokenDetails.should.have.keys('token');
         res.status.should.equal(201);
@@ -130,6 +146,10 @@ describe('User Details Access', () => {
       password: '*dinNNerQ'
     })
     .end((err, res) => {
+      if (err) {
+        res.send(err);
+        done();
+      }
       token = res.body.token;
       done();
     });
@@ -140,6 +160,10 @@ describe('User Details Access', () => {
     .get('/api/users/57e2d4b0cbc141731717651b')
     .set('x-access-token', token)
     .end((err, res) => {
+      if (err) {
+        res.send(err);
+        done();
+      }
       res.status.should.equal(200);
       done();
     });
@@ -153,6 +177,10 @@ describe('User Details Access', () => {
       email: 'alex@gmail.com'
     })
     .end((err, res) => {
+      if (err) {
+        res.send(err);
+        done();
+      }
       res.status.should.equal(200);
       done();
     });
@@ -163,6 +191,10 @@ describe('User Details Access', () => {
     .get('/api/users/57e2d4b0cbc141731717651a')
     .set('x-access-token', token)
     .end((err, res) => {
+      if (err) {
+        res.send(err);
+        done();
+      }
       res.status.should.equal(401);
       done();
     });
@@ -173,6 +205,10 @@ describe('User Details Access', () => {
     .delete('/api/users/57e2d4b0cbc141731717651a')
     .set('x-access-token', token)
     .end((err, res) => {
+      if (err) {
+        res.send(err);
+        done();
+      }
       res.status.should.equal(401);
       done();
     });
@@ -183,6 +219,10 @@ describe('User Details Access', () => {
     .delete('/api/users/57e2d4b0cbc141731717651b')
     .set('x-access-token', token)
     .end((err, res) => {
+      if (err) {
+        res.send(err);
+        done();
+      }
       res.status.should.equal(200);
       done();
     });
@@ -193,6 +233,10 @@ describe('User Details Access', () => {
     .get('/api/users/57e2d4b0cbc141731717651b/documents')
     .set('x-access-token', token)
     .end((err, res) => {
+      if (err) {
+        res.send(err);
+        done();
+      }
       res.status.should.equal(200);
       done();
     });
@@ -203,6 +247,10 @@ describe('User Details Access', () => {
     .get('/api/users')
     .set('x-access-token', token)
     .end((err, res) => {
+      if (err) {
+        res.send(err);
+        done();
+      }
       res.status.should.equal(200);
       done();
     });
@@ -214,6 +262,10 @@ describe('User Details Access', () => {
     .get('/api/documents')
     .set('x-access-token', token)
     .end((err, res) => {
+      if (err) {
+        res.send(err);
+        done();
+      }
       res.status.should.equal(403);
       res.body.message.should.equal('failed to authenticate token');
       done();
@@ -225,6 +277,10 @@ describe(' User Authentication', () => {
     request(server)
     .get('/api/')
     .end((err, res) => {
+      if (err) {
+        res.send(err);
+        done();
+      }
       res.status.should.equal(200);
       done();
     });
@@ -238,6 +294,10 @@ describe(' User Authentication', () => {
       password: 'she knows'
     })
     .end((err, res) => {
+      if (err) {
+        res.send(err);
+        done();
+      }
       res.status.should.equal(404);
       done();
     });
@@ -251,6 +311,10 @@ describe(' User Authentication', () => {
       password: 'wrong'
     })
     .end((err, res) => {
+      if (err) {
+        res.send(err);
+        done();
+      }
       res.status.should.equal(401);
       done();
     });
@@ -260,6 +324,10 @@ describe(' User Authentication', () => {
     request(server)
     .get('/api/documents')
     .end((err, res) => {
+      if (err) {
+        res.send(err);
+        done();
+      }
       res.status.should.equal(403);
       done();
     });

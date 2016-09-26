@@ -17,6 +17,10 @@ describe('Document', () => {
         password: 'admin'
       })
       .end((err, res) => {
+        if (err) {
+          res.send(err);
+          done();
+        }
         token = res.body.token;
         done();
       });
@@ -50,6 +54,10 @@ describe('Document', () => {
       view: 'public'
     })
     .end((err, res) => {
+      if (err) {
+        res.send(err);
+        done();
+      }
       res.status.should.equal(201);
     });
   });
@@ -95,6 +103,10 @@ describe('Document', () => {
       content: 'I know what she wants'
     })
     .end((err, res) => {
+      if (err) {
+        res.send(err);
+        done();
+      }
       res.status.should.equal(409);
       done();
     });
@@ -105,6 +117,10 @@ describe('Document', () => {
     .get('/api/documents')
     .set('x-access-token', token)
     .end((err, res) => {
+      if (err) {
+        res.send(err);
+        done();
+      }
       res.status.should.equal(200);
       res.body.documents.length.should.equal(15);
       done();
@@ -122,6 +138,10 @@ describe('Document access', () => {
       password: '12RaeL34'
     })
     .end((err, res) => {
+      if (err) {
+        res.send(err);
+        done();
+      }
       token = res.body.token;
       done();
     });
@@ -132,6 +152,10 @@ describe('Document access', () => {
     .get('/api/documents')
     .set('x-access-token', token)
     .end((err, res) => {
+      if (err) {
+        res.send(err);
+        done();
+      }
       res.status.should.equal(200);
       res.body.documents.length.should.equal(9);
       done();
@@ -143,6 +167,10 @@ describe('Document access', () => {
     .get('/api/documents/57e3f5260749b7a707b5e366')
     .set('x-access-token', token)
     .end((err, res) => {
+      if (err) {
+        res.send(err);
+        done();
+      }
       res.status.should.equal(401);
       done();
     });
@@ -153,6 +181,10 @@ describe('Document access', () => {
     .delete('/api/documents/57e3f5260749b7a707b5e366')
     .set('x-access-token', token)
     .end((err, res) => {
+      if (err) {
+        res.send(err);
+        done();
+      }
       res.status.should.equal(401);
       done();
     });
@@ -167,6 +199,10 @@ describe('Document access', () => {
       content: 'New content'
     })
     .end((err, res) => {
+      if (err) {
+        res.send(err);
+        done();
+      }
       res.status.should.equal(401);
       done();
     });
@@ -177,6 +213,10 @@ describe('Document access', () => {
     .get('/api/documents?date=2016-09-16T12:20:06.877Z&limit=2')
     .set('x-access-token', token)
     .end((err, res) => {
+      if (err) {
+        res.send(err);
+        done();
+      }
       res.status.should.equal(200);
       res.body.documents.length.should.equal(2);
       done();
@@ -188,6 +228,10 @@ describe('Document access', () => {
     .get('/api/documents?page=2&limit=2')
     .set('x-access-token', token)
     .end((err, res) => {
+      if (err) {
+        res.send(err);
+        done();
+      }
       res.status.should.equal(200);
       res.body.documents.length.should.equal(2);
       done();
@@ -199,6 +243,10 @@ describe('Document access', () => {
     .delete('/api/documents/57e3f5260749b7a707b5e367')
     .set('x-access-token', token)
     .end((err, res) => {
+      if (err) {
+        res.send(err);
+        done();
+      }
       res.status.should.equal(200);
       res.body.message.should.equal('successfully deleted the document');
       done();
@@ -214,6 +262,10 @@ describe('Document access', () => {
       content: 'God is good, all the time'
     })
     .end((err, res) => {
+      if (err) {
+        res.send(err);
+        done();
+      }
       res.status.should.equal(200);
       res.body.message.should.equal('successfully updated document');
       res.body.document.title.should.equal('New title today');
@@ -227,6 +279,10 @@ describe('Document access', () => {
     .get('/api/documents/57ddc4a5873c5ec457e1c20a')
     .set('x-access-token', token)
     .end((err, res) => {
+      if (err) {
+        res.send(err);
+        done();
+      }
       res.status.should.equal(200);
       // res.body.document.should.equal();
       done();

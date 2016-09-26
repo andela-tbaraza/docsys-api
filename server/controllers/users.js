@@ -42,7 +42,7 @@ module.exports = {
           email: user.email,
           _id: user._id,
           title: user.title
-          // viewId: user.viewId
+            // viewId: user.viewId
         }, process.env.SECRET_KEY, {
           expiresIn: '24h' // token expires in 24 hrs
         });
@@ -111,32 +111,39 @@ module.exports = {
   }),
 
   updateUser: ((req, res) => {
-    User.findByIdAndUpdate(req.params.user_id, { $set: {
-      // name: { firstname: req.body.firstname, lastname: req.body.lastname },
-      // username: req.body.username
-      email: req.body.email
-      // password: req.body.password
-    }
-    }, { new: true }, ((err, user) => {
+    User.findByIdAndUpdate(req.params.user_id, {
+      $set: {
+        name: {
+          firstname: req.body.firstname,
+          lastname: req.body.lastname
+        },
+        username: req.body.username,
+        email: req.body.email,
+        password: req.body.password
+      }
+    }, {
+      new: false
+    }, ((err, user) => {
       if (err) {
         res.status(400).send({
           message: err
         });
-      }
-
-      // save the user
-      user.save((err) => {
-        if (err) {
-          res.status(400).send({
-            message: err
-          });
-        }
-        // return message
-        return res.status(200).json({
-          message: 'user updated',
-          user: user
+      } else {
+        // save the user
+        user.save((err) => {
+          if (err) {
+            res.status(400).send({
+              message: err
+            });
+          } else {
+            // return message
+            return res.status(200).json({
+              message: 'user updated',
+              user: user
+            });
+          }
         });
-      });
+      }
     }));
   }),
 
@@ -170,5 +177,4 @@ module.exports = {
       });
     }));
   })
-
 };

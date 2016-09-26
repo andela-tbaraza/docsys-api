@@ -201,7 +201,7 @@ module.exports = {
     Document.findByIdAndUpdate(req.params.document_id, { $set: {
       title: req.body.title,
       content: req.body.content }
-    }, { new: true }, ((err, document) => {
+    }, { new: false }, ((err, document) => {
       if (err) {
         res.status(400).send({
           message: err
