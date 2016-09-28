@@ -36,7 +36,7 @@ describe('User', () => {
         lastname: 'baraza',
         username: 'tonee',
         email: 'toni@gmail.com',
-        title: 'user',
+        title: 'admin',
         password: 'admin'
       })
       .expect('Content-Type', /json/)
@@ -47,6 +47,41 @@ describe('User', () => {
         }
         res.body.message.should.equal('That username already exists');
         res.status.should.equal(409);
+        done();
+      });
+  });
+
+  it('should validate that a 401 response status is returned when deleting unregistered user', (done) => {
+    request(server)
+    .delete('/api/users/57e2d4b0cb')
+    .set('x-access-token', token)
+    .end((err, res) => {
+      if (err) {
+        res.send(err);
+        done();
+      }
+      res.status.should.equal(401);
+      done();
+    });
+  });
+
+  it('should validate that a 400 status is returned when creating a user without all the needed fields', (done) => {
+    request(server)
+      .post('/api/users')
+      .send({
+        firstname: 'Razor',
+        lastname: 'Blade',
+        username: 'raz',
+        email: 'razi@gmail.com'
+      })
+      .expect('Content-Type', /json/)
+      .end((err, res) => {
+        if (err) {
+          res.send(err);
+          done();
+        }
+        res.status.should.equal(400);
+        res.body.should.have.property('error');
         done();
       });
   });
@@ -165,6 +200,11 @@ describe('User Details Access', () => {
         done();
       }
       res.status.should.equal(200);
+      res.body.user.should.have.property('username').eql('alex');
+      res.body.user.should.have.property('email').eql('alex@gmail.com');
+      res.body.user.should.have.property('password');
+      res.body.user.should.have.property('title').eql('user');
+      res.body.user.should.have.property('name').eql({ firstname: 'Alex', lastname: 'Ogara' });
       done();
     });
   });
@@ -224,6 +264,7 @@ describe('User Details Access', () => {
         done();
       }
       res.status.should.equal(200);
+      res.body.message.should.equal('successfully deleted the user');
       done();
     });
   });
@@ -238,6 +279,7 @@ describe('User Details Access', () => {
         done();
       }
       res.status.should.equal(200);
+      res.body.documents.length.should.equal(5);
       done();
     });
   });

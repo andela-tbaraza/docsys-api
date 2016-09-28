@@ -32,7 +32,10 @@
           "error",
           { "allow": [
             "_id",
-            "_this"]
+            "_this",
+            "_send",
+            "_sent"
+          ]
             }],
         "no-param-reassign": [
           "error",

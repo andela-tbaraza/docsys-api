@@ -1,21 +1,24 @@
 /* eslint-disable no-console */
+/* eslint-disable global-require */
+/* eslint-disable new-cap */
 
+if (!process.env.DATABASE_URL_TEST) {
+  require('dotenv').load();
+}
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
-const dotenv = require('dotenv');
-
-if (!process.env.DATABASE_URL_TEST) {
-  dotenv.load();
-}
+const routes = require('./server/routes');
 
 const app = express(); // define our app using express
 
 if (process.env.NODE_ENV !== 'test') {
   mongoose.Promise = global.Promise;
   mongoose.connect(process.env.DATABASE_URL)
-  .then(() => console.log('Connection succesful'))
+  .then(() => {
+    console.log('Connection succesful');
+  })
   .catch((err) => {
     console.error(err);
   });
@@ -38,17 +41,8 @@ app.use(bodyParser.urlencoded({ extended: true })); // parse application/x-www-f
 app.use(bodyParser.json()); // parse application/json
 const port = process.env.PORT || 8080;        // set our port
 
-// ROUTES FOR OUR application
-// const router = express.Router(); // get an instance of the express Router
-const routes = require('./server/routes');
-
 // all our routes will be prefixed with api
 app.use('/api', routes(express.Router()));
-
-// Handle all routes
-// router(app);
-// app.use('/', router);
-// more routes later
 
 // Starting the server
 app.listen(port);

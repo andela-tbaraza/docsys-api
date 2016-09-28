@@ -34,7 +34,7 @@ module.exports = {
           });
         }
         res.status(400).send({
-          message: err
+          error: err
         });
       } else {
         const token = jwt.sign({
@@ -66,13 +66,13 @@ module.exports = {
           if (err || !can) {
             res.status(401).json({
               message: 'Not authorized',
-              err: err
+              error: err
             });
           } else {
             User.findById(req.decoded._id, ((err, user) => {
               if (err) {
                 res.status(400).send({
-                  message: err
+                  error: err
                 });
               }
               return res.json({
@@ -85,8 +85,8 @@ module.exports = {
       } else {
         User.find((err, users) => {
           if (err) {
-            res.status(400).send({
-              message: err
+            res.status(500).send({
+              error: err
             });
           }
           return res.status(200).json({
@@ -126,14 +126,14 @@ module.exports = {
     }, ((err, user) => {
       if (err) {
         res.status(400).send({
-          message: err
+          error: err
         });
       } else {
         // save the user
         user.save((err) => {
           if (err) {
             res.status(400).send({
-              message: err
+              error: err
             });
           } else {
             // return message
@@ -152,8 +152,8 @@ module.exports = {
       _id: req.params.user_id
     }, (err) => {
       if (err) {
-        res.status(400).send({
-          message: err
+        res.status(401).send({
+          error: err
         });
       }
       // else return a message
@@ -168,8 +168,8 @@ module.exports = {
       ownerId: req.params.id
     }, ((err, documents) => {
       if (err) {
-        res.status(400).send({
-          message: err
+        res.status(401).send({
+          error: err
         });
       }
       res.status(200).json({
