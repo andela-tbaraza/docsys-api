@@ -36,7 +36,7 @@ describe('User', () => {
         lastname: 'baraza',
         username: 'tonee',
         email: 'toni@gmail.com',
-        title: 'user',
+        title: 'admin',
         password: 'admin'
       })
       .expect('Content-Type', /json/)
@@ -47,6 +47,41 @@ describe('User', () => {
         }
         res.body.message.should.equal('That username already exists');
         res.status.should.equal(409);
+        done();
+      });
+  });
+
+  it('should validate that a 401 response status is returned when deleting unregistered user', (done) => {
+    request(server)
+    .delete('/api/users/57e2d4b0cb')
+    .set('x-access-token', token)
+    .end((err, res) => {
+      if (err) {
+        res.send(err);
+        done();
+      }
+      res.status.should.equal(401);
+      done();
+    });
+  });
+
+  it('should validate that a 400 status is returned when creating a user without all the needed fields', (done) => {
+    request(server)
+      .post('/api/users')
+      .send({
+        firstname: 'Razor',
+        lastname: 'Blade',
+        username: 'raz',
+        email: 'razi@gmail.com'
+      })
+      .expect('Content-Type', /json/)
+      .end((err, res) => {
+        if (err) {
+          res.send(err);
+          done();
+        }
+        res.status.should.equal(400);
+        res.body.should.have.property('error');
         done();
       });
   });

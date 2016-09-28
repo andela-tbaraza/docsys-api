@@ -17,6 +17,17 @@ module.exports = (router) => {
 
   require('./users/authRoute')(router);
 
+  router.use((req, res, next) => {
+    const _send = res.send;
+    let sent = false;
+    res.send = function (data) {
+      if (sent) return;
+      _send.bind(res)(data);
+      sent = true;
+    };
+    next();
+  });
+
   // middleware to use for all requests
   router.use((req, res, next) => {
     // check for the token in the header, post parameters or url parameters

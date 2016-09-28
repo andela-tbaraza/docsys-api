@@ -10,7 +10,7 @@ module.exports = {
     }).select('email username password title').exec((err, user) => {
       if (err) {
         res.status(400).send({
-          message: err
+          error: err
         });
       }
 

@@ -42,6 +42,23 @@ describe('Document', () => {
       });
   });
 
+  it('validate that a 400 status response is returned when creating a document without all the required fields', (done) => {
+    request(server)
+      .post('/api/documents')
+      .set('x-access-token', token)
+      .send({
+        title: 'Love'
+      })
+      .end((err, res) => {
+        if (err) {
+          res.send(err);
+          done();
+        }
+        res.status.should.equal(400);
+        done();
+      });
+  });
+
   it('should validate that a user can specify the view permissions of a document', () => {
     request(server)
     .post('/api/documents')
@@ -287,6 +304,20 @@ describe('Document access', () => {
       res.body.document.should.have.property('view').eql('private');
       res.body.document.should.have.property('updatedAt').eql('2016-09-17T22:33:09.026Z');
       res.body.document.should.have.property('createdAt').eql('2016-09-17T22:33:09.026Z');
+      done();
+    });
+  });
+
+  it('should validate that a 401 status response is returned when supplying the wrong id', (done) => {
+    request(server)
+    .get('/api/documents/57ddc4a5')
+    .set('x-access-token', token)
+    .end((err, res) => {
+      if (err) {
+        res.send(err);
+        done();
+      }
+      res.status.should.equal(401);
       done();
     });
   });

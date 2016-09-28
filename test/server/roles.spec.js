@@ -40,6 +40,24 @@ describe('Role', () => {
     });
   });
 
+  it('should validate that a 400 status response is returned when creating a role which is not part of the ones enumerated in the database', (done) => {
+    request(server)
+    .post('/api/roles')
+    .set('x-access-token', token)
+    .send({
+      title: 'super'
+    })
+    .end((err, res) => {
+      if (err) {
+        res.send(err);
+        done();
+      }
+      res.status.should.equal(400);
+      res.body.should.have.property('error');
+      done();
+    });
+  });
+
   it('should validate that all roles are returned when Roles.all is called', (done) => {
     request(server)
     .get('/api/roles')
@@ -67,7 +85,6 @@ describe('Role', () => {
         done();
       }
       res.status.should.equal(200);
-      // res.body.roles.length.should.equal(1);
       done();
     });
   });

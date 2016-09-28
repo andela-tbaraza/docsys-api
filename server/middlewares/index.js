@@ -34,7 +34,7 @@ module.exports = {
         if (err || !can) {
           rbac.can(req.decoded.title, 'user:delete&update', { userId: req.decoded._id, id: userId }, ((err, can) => {
             if (err || !can) {
-              res.status(401).json({ message: 'Not authorized', err: err });
+              res.status(401).json({ message: 'Not authorized', error: err });
             } else {
               return next();
             }
@@ -51,15 +51,15 @@ module.exports = {
       const docId = req.params.document_id;
       Document.findById(docId).select('ownerId').exec((err, idObject) => {
         if (err) {
-          res.status(400).send({
-            message: err
+          res.status(401).send({
+            error: err
           });
         } else {
           rbac.can(req.decoded.title, 'doc:delete&update:any', (err, can) => {
             if (err || !can) {
               rbac.can(req.decoded.title, 'doc:delete&update', { userId: req.decoded._id, ownerId: idObject.ownerId }, (err, can) => {
                 if (err || !can) {
-                  res.status(401).json({ message: 'Not authorized', err: err });
+                  res.status(401).json({ message: 'Not authorized', error: err });
                 } else {
                   return next();
                 }
@@ -77,7 +77,7 @@ module.exports = {
     return ((req, res, next) => {
       rbac.can(req.decoded.title, 'role:create:delete:update:get', (err, can) => {
         if (err || !can) {
-          res.status(401).json({ message: 'Not authorized', err: err });
+          res.status(401).json({ message: 'Not authorized', error: err });
         } else {
           return next();
         }

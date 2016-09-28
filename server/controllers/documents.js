@@ -12,7 +12,7 @@ module.exports = {
     }).select('_id').exec((err, id) => {
       if (err) {
         res.status(400).send({
-          message: err
+          error: err
         });
       } else {
         const document = new Document(); // creating an instance of Document model
@@ -34,7 +34,7 @@ module.exports = {
               });
             } else {
               res.status(400).send({
-                message: err
+                error: err
               });
             }
           } else {
@@ -62,7 +62,7 @@ module.exports = {
               // not allowed
               res.status(401).json({
                 message: 'Not authorized',
-                err: err
+                error: err
               });
             } else {
               limit = parseInt(limit, 10);
@@ -75,7 +75,7 @@ module.exports = {
             .exec((err, documents) => {
               if (err) {
                 res.status(400).send({
-                  message: err
+                  error: err
                 });
               }
               res.status(200).json({
@@ -92,7 +92,7 @@ module.exports = {
           .exec((err, documents) => {
             if (err) {
               res.status(400).send({
-                message: err
+                error: err
               });
             }
             res.status(200).json({
@@ -111,7 +111,7 @@ module.exports = {
             if (err || !can) {
               res.status(401).json({
                 message: 'Not authorized',
-                err: err
+                error: err
               });
             } else {
               Document.find().sort({ createdAt: -1 })
@@ -121,7 +121,7 @@ module.exports = {
               }, ((err, documents) => {
                 if (err) {
                   res.status(400).send({
-                    message: err
+                    error: err
                   });
                 }
                 res.status(200).json({
@@ -137,7 +137,7 @@ module.exports = {
             .exec((err, documents) => {
               if (err) {
                 res.status(400).send({
-                  message: err
+                  error: err
                 });
               }
               res.status(200).json({
@@ -153,7 +153,7 @@ module.exports = {
             if (err || !can) {
               res.status(401).json({
                 message: 'Not authorized',
-                err: err
+                error: err
               });
             } else {
               Document.find().sort({ createdAt: -1 }).find({
@@ -161,7 +161,7 @@ module.exports = {
               }, ((err, documents) => {
                 if (err) {
                   res.status(400).send({
-                    message: err
+                    error: err
                   });
                 }
                 res.status(200).json({ documents: documents });
@@ -173,7 +173,7 @@ module.exports = {
           .exec((err, documents) => {
             if (err) {
               res.status(400).send({
-                message: err
+                error: err
               });
             }
             res.status(200).json({ documents: documents });
@@ -187,8 +187,8 @@ module.exports = {
   findDocument: ((req, res) => {
     Document.findById(req.params.document_id, (err, document) => {
       if (err) {
-        res.status(400).send({
-          message: err
+        res.status(401).send({
+          error: err
         });
       }
       return res.status(200).json({
@@ -204,7 +204,7 @@ module.exports = {
     }, { new: true }, ((err, document) => {
       if (err) {
         res.status(400).send({
-          message: err
+          error: err
         });
       }
 
@@ -212,7 +212,7 @@ module.exports = {
       document.save((error) => {
         if (error) {
           res.status(400).send({
-            message: err
+            error: err
           });
         }
         res.status(200).json({
@@ -228,7 +228,7 @@ module.exports = {
       _id: req.params.document_id
     }, (err) => {
       if (err) {
-        res.status(400).send({
+        res.status(401).send({
           message: err
         });
       } else {

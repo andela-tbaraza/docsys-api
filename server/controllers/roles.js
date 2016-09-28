@@ -13,7 +13,7 @@ module.exports = {
             message: 'That role already exists' });
         }
         res.status(400).send({
-          message: err
+          error: err
         });
       } else {
         res.status(201).json({
@@ -27,8 +27,8 @@ module.exports = {
   findRoles: ((req, res) => {
     Role.find((err, roles) => {
       if (err) {
-        res.status(500).send({
-          message: err
+        res.status(400).send({
+          error: err
         });
       }
       return res.status(200).json({
@@ -41,7 +41,7 @@ module.exports = {
     Role.findById(req.params.role_id, ((err, role) => {
       if (err) {
         res.status(400).send({
-          message: err
+          error: err
         });
       }
       return res.status(200).json({
@@ -54,7 +54,7 @@ module.exports = {
     Role.remove({ _id: req.params.role_id }, (err) => {
       if (err) {
         res.status(400).send({
-          message: err
+          error: err
         });
       }
       res.status(200).json({
