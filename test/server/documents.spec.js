@@ -282,7 +282,11 @@ describe('Document access', () => {
         done();
       }
       res.status.should.equal(200);
-      // res.body.document.should.equal();
+      res.body.document.should.have.property('title').eql('today12');
+      res.body.document.should.have.property('content').eql('today1');
+      res.body.document.should.have.property('view').eql('private');
+      res.body.document.should.have.property('updatedAt').eql('2016-09-17T22:33:09.026Z');
+      res.body.document.should.have.property('createdAt').eql('2016-09-17T22:33:09.026Z');
       done();
     });
   });

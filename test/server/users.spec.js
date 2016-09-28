@@ -165,6 +165,11 @@ describe('User Details Access', () => {
         done();
       }
       res.status.should.equal(200);
+      res.body.user.should.have.property('username').eql('alex');
+      res.body.user.should.have.property('email').eql('alex@gmail.com');
+      res.body.user.should.have.property('password');
+      res.body.user.should.have.property('title').eql('user');
+      res.body.user.should.have.property('name').eql({ firstname: 'Alex', lastname: 'Ogara' });
       done();
     });
   });
@@ -224,6 +229,7 @@ describe('User Details Access', () => {
         done();
       }
       res.status.should.equal(200);
+      res.body.message.should.equal('successfully deleted the user');
       done();
     });
   });
@@ -238,6 +244,7 @@ describe('User Details Access', () => {
         done();
       }
       res.status.should.equal(200);
+      res.body.documents.length.should.equal(5);
       done();
     });
   });
