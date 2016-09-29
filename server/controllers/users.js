@@ -21,7 +21,16 @@ module.exports = {
     user.password = req.body.password;
 
     if (req.body.title) {
-      user.title = req.body.title;
+      console.log('TITLE', req.body.title);
+      const roles = ['public', 'user', 'admin', 'superUser'];
+      if (roles.indexOf(req.body.title) === -1) {
+        console.log(roles.indexOf('admin'));
+        res.status(400).send({
+          message: 'Invalid role'
+        });
+      } else {
+        user.title = req.body.title;
+      }
     }
 
     // save user created and check for errors
@@ -71,12 +80,11 @@ module.exports = {
           } else {
             User.findById(req.decoded._id, ((err, user) => {
               if (err) {
-                res.status(400).send({
+                res.status(404).send({
                   error: err
                 });
               }
-              return res.json({
-                success: true,
+              return res.status(200).json({
                 user: user
               });
             }));
@@ -85,7 +93,7 @@ module.exports = {
       } else {
         User.find((err, users) => {
           if (err) {
-            res.status(500).send({
+            res.status(400).send({
               error: err
             });
           }

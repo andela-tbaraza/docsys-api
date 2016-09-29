@@ -149,6 +149,7 @@ module.exports = {
     } else {
       rbac.can(req.decoded.title, 'docs:get:all', (err, can) => {
         if (err || !can) {
+          // console.log('role', req.decoded.title);
           rbac.can(req.decoded.title, 'docs:get', (err, can) => {
             if (err || !can) {
               res.status(401).json({
@@ -183,7 +184,6 @@ module.exports = {
     }
   }),
 
-
   findDocument: ((req, res) => {
     Document.findById(req.params.document_id, (err, document) => {
       if (err) {
@@ -196,6 +196,24 @@ module.exports = {
       });
     });
   }),
+
+  findMyDocs: (req, res) => {
+    let limit = req.query.limit || req.params.limit;
+    limit = parseInt(limit, 10);
+    Document
+    .find({ ownerId: req.decoded._id })
+    .sort({ createdAt: -1 })
+    .limit(limit)
+    .exec((err, documents) => {
+      if (err || documents.length === 0) {
+        res.status(404).send({
+          error: err, message: 'Docs not found'
+        });
+      } else {
+        res.status(200).send(documents);
+      }
+    });
+  },
 
   updateDocument: ((req, res) => {
     Document.findByIdAndUpdate(req.params.document_id, { $set: {

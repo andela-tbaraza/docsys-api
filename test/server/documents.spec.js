@@ -42,21 +42,57 @@ describe('Document', () => {
       });
   });
 
-  it('validate that a 400 status response is returned when creating a document without all the required fields', (done) => {
+  it('validates that all documents are returned, limited by a specified number when documents.all is called', (done) => {
     request(server)
-      .post('/api/documents')
+      .get('/api/documents?limit=2')
       .set('x-access-token', token)
-      .send({
-        title: 'Love'
-      })
       .end((err, res) => {
         if (err) {
           res.send(err);
           done();
         }
-        res.status.should.equal(400);
+        res.status.should.equal(200);
+        res.body.documents.length.should.equal(2);
         done();
       });
+  });
+
+  it('should validate that a user can get documents in chunks(employ limit with offset)', (done) => {
+    request(server)
+    .get('/api/documents?page=2&limit=5')
+    .set('x-access-token', token)
+    .end((err, res) => {
+      if (err) {
+        res.send(err);
+        done();
+      }
+      res.status.should.equal(200);
+      res.body.documents.length.should.equal(5);
+      res.body.documents[0]._id.should.equal('57e39e3f8dbb818002cd6d52');
+      res.body.documents[1]._id.should.equal('57e3f5260749b7a707b5e366');
+      res.body.documents[2]._id.should.equal('57e3f5280749b7a707b5e369');
+      res.body.documents[3]._id.should.equal('57e0da84e0bc2bde0b944bbb');
+      res.body.documents[4]._id.should.equal('57e0da12673cffd10b9d6ae3');
+      done();
+    });
+  });
+
+  it('should validate that all documents are returned in descending order of the published dates limited by specified number', (done) => {
+    request(server)
+    .get('/api/documents')
+    .set('x-access-token', token)
+    .end((err, res) => {
+      if (err) {
+        res.send(err);
+        done();
+      }
+      res.status.should.equal(200);
+      res.body.documents[0].createdAt.should.be.above(res.body.documents[1].createdAt);
+      res.body.documents[1].createdAt.should.be.above(res.body.documents[2].createdAt);
+      res.body.documents[2].createdAt.should.be.above(res.body.documents[3].createdAt);
+      res.body.documents[3].createdAt.should.be.above(res.body.documents[4].createdAt);
+      done();
+    });
   });
 
   it('should validate that a user can specify the view permissions of a document', () => {
@@ -77,20 +113,6 @@ describe('Document', () => {
     });
   });
 
-  it('validates that all documents are returned, limited by a specified number', (done) => {
-    request(server)
-      .get('/api/documents?limit=2')
-      .set('x-access-token', token)
-      .end((err, res) => {
-        if (err) {
-          res.send(err);
-          done();
-        }
-        res.status.should.equal(200);
-        res.body.documents.length.should.equal(2);
-        done();
-      });
-  });
 
   it('validates that all documents created on a specific date are returned, limited by a limit', (done) => {
     request(server)
@@ -137,9 +159,26 @@ describe('Document', () => {
         done();
       }
       res.status.should.equal(200);
-      res.body.documents.length.should.equal(15);
+      res.body.documents.length.should.equal(16);
       done();
     });
+  });
+
+  it('validate that a 400 status response is returned when creating a document without all the required fields', (done) => {
+    request(server)
+      .post('/api/documents')
+      .set('x-access-token', token)
+      .send({
+        title: 'Love'
+      })
+      .end((err, res) => {
+        if (err) {
+          res.send(err);
+          done();
+        }
+        res.status.should.equal(400);
+        done();
+      });
   });
 });
 
@@ -172,7 +211,22 @@ describe('Document access', () => {
         done();
       }
       res.status.should.equal(200);
-      res.body.documents.length.should.equal(9);
+      res.body.documents.length.should.equal(10);
+      done();
+    });
+  });
+
+  it('should validate that a user can view all their documents', (done) => {
+    request(server)
+    .get('/api/mydocuments')
+    .set('x-access-token', token)
+    .end((err, res) => {
+      if (err) {
+        res.send(err);
+        done();
+      }
+      res.status.should.equal(200);
+      res.body.length.should.equal(6);
       done();
     });
   });
@@ -223,21 +277,6 @@ describe('Document access', () => {
     });
   });
 
-  it('should validate that a user can get all documents created on a specified date limited by a specified number', (done) => {
-    request(server)
-    .get('/api/documents?date=2016-09-16T12:20:06.877Z&limit=2')
-    .set('x-access-token', token)
-    .end((err, res) => {
-      if (err) {
-        res.send(err);
-        done();
-      }
-      res.status.should.equal(200);
-      res.body.documents.length.should.equal(2);
-      done();
-    });
-  });
-
   it('should validate that a user can get documents in chunks', (done) => {
     request(server)
     .get('/api/documents?page=2&limit=2')
@@ -249,6 +288,8 @@ describe('Document access', () => {
       }
       res.status.should.equal(200);
       res.body.documents.length.should.equal(2);
+      res.body.documents[0]._id.should.equal('57e39f108dbb818002cd6d53');
+      res.body.documents[1]._id.should.equal('57e3f5280749b7a707b5e369');
       done();
     });
   });
@@ -318,6 +359,57 @@ describe('Document access', () => {
         done();
       }
       res.status.should.equal(401);
+      done();
+    });
+  });
+});
+
+describe('Search', () => {
+  before((done) => {
+    request(server)
+    .post('/api/login')
+    .send({
+      username: 'rael',
+      password: '12RaeL34'
+    })
+    .end((err, res) => {
+      if (err) {
+        res.send(err);
+        done();
+      }
+      token = res.body.token;
+      done();
+    });
+  });
+
+  it('should validate that a user can view all their documents in descending order of the published dates limited by specified number', (done) => {
+    request(server)
+    .get('/api/mydocuments?limit=3')
+    .set('x-access-token', token)
+    .end((err, res) => {
+      if (err) {
+        res.send(err);
+        done();
+      }
+      res.status.should.equal(200);
+      res.body.length.should.equal(3);
+      res.body[0].createdAt.should.be.above(res.body[1].createdAt);
+      res.body[1].createdAt.should.be.above(res.body[2].createdAt);
+      done();
+    });
+  });
+
+  it('should validate that a user can get all documents limited by a specified number that were published on a certain date', (done) => {
+    request(server)
+    .get('/api/documents?date=2016-09-16T12:20:06.877Z&limit=2')
+    .set('x-access-token', token)
+    .end((err, res) => {
+      if (err) {
+        res.send(err);
+        done();
+      }
+      res.status.should.equal(200);
+      res.body.documents.length.should.equal(2);
       done();
     });
   });
