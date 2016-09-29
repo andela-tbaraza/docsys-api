@@ -39,7 +39,7 @@ module.exports = [{
     title: 'user'
   }, {
     _id: '57e58a1e090f1c761e4cae94',
-    title: 'SuperUser'
+    title: 'superUser'
   }
 ]
 }, {
@@ -56,6 +56,14 @@ module.exports = [{
     _id: '57e3f5260749b7a707b5e367',
     title: 'Penny',
     content: 'I don \'t know what she wants',
+    ownerId: '57e2d4b0cbc141731717651a',
+    createdAt: '2016-09-16T12:20:06.877Z',
+    roleId: '57e3a3a0198c7df30279ca5d',
+    view: 'private'
+  }, {
+    _id: '57e3f6260749c7a707b5e367',
+    title: 'Grace',
+    content: 'God loved the world',
     ownerId: '57e2d4b0cbc141731717651a',
     createdAt: '2016-09-16T12:20:06.877Z',
     roleId: '57e3a3a0198c7df30279ca5d',

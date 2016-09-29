@@ -45,7 +45,6 @@ describe('User', () => {
           res.send(err);
           done();
         }
-        res.body.message.should.equal('That username already exists');
         res.status.should.equal(409);
         done();
       });
@@ -63,27 +62,6 @@ describe('User', () => {
       res.status.should.equal(401);
       done();
     });
-  });
-
-  it('should validate that a 400 status is returned when creating a user without all the needed fields', (done) => {
-    request(server)
-      .post('/api/users')
-      .send({
-        firstname: 'Razor',
-        lastname: 'Blade',
-        username: 'raz',
-        email: 'razi@gmail.com'
-      })
-      .expect('Content-Type', /json/)
-      .end((err, res) => {
-        if (err) {
-          res.send(err);
-          done();
-        }
-        res.status.should.equal(400);
-        res.body.should.have.property('error');
-        done();
-      });
   });
 
   it('should validate that a new user created has a role defined', (done) => {
@@ -125,15 +103,14 @@ describe('User', () => {
           res.send(err);
           done();
         }
-        res.body.message.should.equal('user created');
-        res.body.user.name.should.have.keys('firstname', 'lastname');
         res.status.should.equal(201);
+        res.body.message.should.equal('user created');
+        res.body.user.should.have.property('name').eql({ lastname: 'Kimani', firstname: 'Jacckline' });
         done();
       });
   });
 
-
-  it('should validate that all users are returned', (done) => {
+  it('should validate that only the admin can get details of all users', (done) => {
     request(server)
       .get('/api/users')
       .set('x-access-token', token)
@@ -143,7 +120,53 @@ describe('User', () => {
           res.send(err);
           done();
         }
+        res.body.users.length.should.equal(5);
         res.status.should.equal(200);
+        done();
+      });
+  });
+
+  it('should validate that a status response of 400 is returned when creating a user with a role that is not part of the enumerated roles', (done) => {
+    request(server)
+      .post('/api/users')
+      .send({
+        firstname: 'Jentricks',
+        lastname: 'Adhiambo',
+        username: 'jenty',
+        email: 'jenty@gmail.com',
+        password: 'rav4',
+        title: 'any'
+      })
+      .expect('Content-Type', /json/)
+      .end((err, res) => {
+        if (err) {
+          res.send(err);
+          done();
+        }
+        res.body.message.should.equal('Invalid role');
+        res.status.should.equal(400);
+        done();
+      });
+  });
+
+
+  it('should validate that a 400 status is returned when creating a user without all the needed fields', (done) => {
+    request(server)
+      .post('/api/users')
+      .send({
+        firstname: 'Razor',
+        lastname: 'Blade',
+        username: 'raz',
+        email: 'razi@gmail.com'
+      })
+      .expect('Content-Type', /json/)
+      .end((err, res) => {
+        if (err) {
+          res.send(err);
+          done();
+        }
+        res.status.should.equal(400);
+        res.body.should.have.property('error');
         done();
       });
   });
@@ -209,6 +232,20 @@ describe('User Details Access', () => {
     });
   });
 
+  it('should validate that a user cannot get the details of all users just theirs', (done) => {
+    request(server)
+    .get('/api/users')
+    .set('x-access-token', token)
+    .end((err, res) => {
+      if (err) {
+        res.send(err);
+        done();
+      }
+      res.status.should.equal(200);
+      done();
+    });
+  });
+
   it('should validate that a user can edit their details', (done) => {
     request(server)
     .put('/api/users/57e2d4b0cbc141731717651b')
@@ -222,6 +259,7 @@ describe('User Details Access', () => {
         done();
       }
       res.status.should.equal(200);
+      res.body.user.should.have.property('email').eql('alex@gmail.com');
       done();
     });
   });
@@ -284,19 +322,6 @@ describe('User Details Access', () => {
     });
   });
 
-  it('should validate that a user cannot get the details of all users just theirs', (done) => {
-    request(server)
-    .get('/api/users')
-    .set('x-access-token', token)
-    .end((err, res) => {
-      if (err) {
-        res.send(err);
-        done();
-      }
-      res.status.should.equal(200);
-      done();
-    });
-  });
 
   it('should return a 403 response if an incorrect or expired token is passed', (done) => {
     token += 'you';
