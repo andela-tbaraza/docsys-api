@@ -232,7 +232,7 @@ describe('User Details Access', () => {
     });
   });
 
-  it('should validate that a user can only get their own details and not details of all users just theirs', (done) => {
+  it('should validate that a user can only get their own details and not details of all users', (done) => {
     request(server)
     .get('/api/users')
     .set('x-access-token', token)
