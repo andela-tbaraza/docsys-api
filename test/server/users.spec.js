@@ -232,7 +232,7 @@ describe('User Details Access', () => {
     });
   });
 
-  it('should validate that a user cannot get the details of all users just theirs', (done) => {
+  it('should validate that a user can only get their own details and not details of all users', (done) => {
     request(server)
     .get('/api/users')
     .set('x-access-token', token)
@@ -242,6 +242,11 @@ describe('User Details Access', () => {
         done();
       }
       res.status.should.equal(200);
+      res.body.should.have.property('username').eql('alex');
+      res.body.should.have.property('email').eql('alex@gmail.com');
+      res.body.should.have.property('password');
+      res.body.should.have.property('title').eql('user');
+      res.body.should.have.property('name').eql({ firstname: 'Alex', lastname: 'Ogara' });
       done();
     });
   });

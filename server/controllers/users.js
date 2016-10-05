@@ -82,9 +82,7 @@ module.exports = {
                   error: err
                 });
               }
-              return res.status(200).json({
-                user: user
-              });
+              return res.status(200).json(user);
             }));
           }
         }));

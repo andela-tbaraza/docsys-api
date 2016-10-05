@@ -410,6 +410,8 @@ describe('Search', () => {
       }
       res.status.should.equal(200);
       res.body.documents.length.should.equal(2);
+      res.body.documents[0].createdAt.should.equal('2016-09-16T12:20:06.877Z');
+      res.body.documents[1].createdAt.should.equal('2016-09-16T12:20:06.877Z');
       done();
     });
   });
