@@ -11,6 +11,7 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const routes = require('./server/routes');
 console.log(hello);
+console.log('memme');
 
 const app = express(); // define our app using express
 
