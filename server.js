@@ -12,6 +12,7 @@ const morgan = require('morgan');
 const routes = require('./server/routes');
 console.log(hello);
 console.log('memme');
+console.log('ammmend');
 
 const app = express(); // define our app using express
 
